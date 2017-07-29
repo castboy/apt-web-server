@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/julienschmidt/httprouter"
@@ -21,7 +22,7 @@ func (this *OLPOController) Post(w http.ResponseWriter, r *http.Request, _ httpr
 
 	switch input.Para.Cmmand {
 	case "creat":
-		//		RuleFile(r, "/tmp/rules/", "rule")
+		WriteFile("/tmp/rules", input.Para.Name, []byte(input.Para.Details))
 
 		err, list = new(models.TblOLA).CreatAssignment(&input.Para)
 	case "delete":
@@ -65,12 +66,7 @@ func Params(r *http.Request) (input OLPOGetInput) {
 
 	input.Para.Weight = params.Weight
 
-	details := params.Details
-	if details == "" {
-		input.Para.Details = fmt.Sprintf("%s offline dispatch", input.Para.Type)
-	} else {
-		input.Para.Details = input.Para.Name
-	}
+	input.Para.Details = params.Details
 
 	fmt.Println(input)
 
@@ -85,4 +81,43 @@ func GetDataString(req *http.Request) string {
 	}
 	fmt.Println(bytes.NewBuffer(result).String())
 	return bytes.NewBuffer(result).String()
+}
+
+func WriteFile(dir string, file string, bytes []byte) bool {
+	isExist, err := pathExists(dir)
+	if !isExist {
+		err := os.MkdirAll(dir, 0777)
+		if err != nil {
+			fmt.Printf("%s", err)
+		} else {
+			fmt.Print("Create Directory OK!")
+		}
+	}
+
+	f, err := os.Create(dir + "/" + file)
+	if nil != err {
+		fmt.Println(err.Error())
+	}
+
+	defer f.Close()
+
+	ok := true
+	err = ioutil.WriteFile(dir+"/"+file, bytes, 0644)
+	if nil != err {
+		ok = false
+	}
+
+	return ok
+}
+
+func pathExists(path string) (bool, error) {
+	_, err := os.Stat(path)
+	if err == nil {
+		return true, nil
+	}
+	if os.IsNotExist(err) {
+		return false, nil
+	}
+
+	return false, err
 }
