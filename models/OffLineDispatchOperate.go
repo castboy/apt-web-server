@@ -129,6 +129,7 @@ func (this *TblOLA) DeleteAssignment(para *TblOLASearchPara) (error, *CMDResult)
 }
 
 func (this *TblOLA) StartAssignment(para *TblOLASearchPara) (error, *CMDResult) {
+	fmt.Println("开始离线任务")
 	var res_t CMDResult
 	var agentPar AgentPara
 	query := fmt.Sprintf(`select id,start,end,type,weight,topic,status from %s where name='%s' and time=%d;`,
@@ -136,7 +137,9 @@ func (this *TblOLA) StartAssignment(para *TblOLASearchPara) (error, *CMDResult) 
 		para.Name,
 		para.Time)
 	rows, err := db.Query(query)
+	fmt.Println("sql 语句:", query)
 	if err != nil {
+		fmt.Println("执行sql语句失败")
 		res_t.Result = "faild"
 		mlog.Debug(query, "StartAssignment get task status error")
 		return err, &res_t
@@ -146,6 +149,7 @@ func (this *TblOLA) StartAssignment(para *TblOLASearchPara) (error, *CMDResult) 
 	var taskID int
 
 	for rows.Next() {
+		fmt.Println("进入next")
 		ugc := new(TblOLA)
 		err = rows.Scan(
 			&ugc.Id,
@@ -165,6 +169,8 @@ func (this *TblOLA) StartAssignment(para *TblOLASearchPara) (error, *CMDResult) 
 		agentPar.Topic = topicName
 
 		/******判断任务运行状态，避免重复运行******/
+
+		fmt.Println("判断运行状态")
 		if ugc.Status == "running" {
 			res_t.Result = "this task is running!"
 			return nil, &res_t
