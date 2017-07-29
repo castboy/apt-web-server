@@ -83,5 +83,6 @@ func GetDataString(req *http.Request) string {
 	} else {
 
 	}
+	fmt.Println(bytes.NewBuffer(result).String())
 	return bytes.NewBuffer(result).String()
 }
