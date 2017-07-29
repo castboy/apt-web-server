@@ -66,7 +66,7 @@ func GetTLMsqlCmd(tablename string, para *TblTaskSearchPara) []string {
 }
 
 func (this *TblOLA) GetTaskDetails(para *TblTaskSearchPara) (error, *TblTaskData) {
-	qslice := GetTLMsqlCmd(this.TableName(""), para)
+	qslice := GetTLMsqlCmd(this.TableName(para.OfflineTag), para)
 	query := strings.Join(qslice, "")
 	mlog.Debug(string(query))
 	rows, err := db.Query(query)
@@ -106,7 +106,7 @@ func (this *TblOLA) GetTaskDetails(para *TblTaskSearchPara) (error, *TblTaskData
 		return err, nil
 	}
 	list.Counts = GetTLCounts("", para)
-	list.Totality = GetTLCounts(this.TableName(""), para)
+	list.Totality = GetTLCounts(this.TableName(para.OfflineTag), para)
 	return nil, &list
 }
 func GetTLCounts(tablename string, para *TblTaskSearchPara) int64 {
