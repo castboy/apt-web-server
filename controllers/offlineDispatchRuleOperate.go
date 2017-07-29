@@ -3,11 +3,11 @@ package controllers
 
 import (
 	"apt-web-server/models"
+	"bytes"
+	"encoding/json"
 	"fmt"
-	"io"
+	"io/ioutil"
 	"net/http"
-	"os"
-	"strconv"
 	"time"
 
 	"github.com/julienschmidt/httprouter"
@@ -21,7 +21,7 @@ func (this *OLPOController) Post(w http.ResponseWriter, r *http.Request, _ httpr
 
 	switch input.Para.Cmmand {
 	case "creat":
-		RuleFile(r, "/tmp/rules/", "rule")
+		//		RuleFile(r, "/tmp/rules/", "rule")
 
 		err, list = new(models.TblOLA).CreatAssignment(&input.Para)
 	case "delete":
@@ -43,49 +43,45 @@ func (this *OLPOController) Post(w http.ResponseWriter, r *http.Request, _ httpr
 }
 
 func Params(r *http.Request) (input OLPOGetInput) {
-	input.Para.Name = r.PostFormValue("name")
+	var params models.TblOLASearchPara
+
+	bytes := []byte(GetDataString(r))
+
+	json.Unmarshal(bytes, &params)
+
+	input.Para.Name = params.Name
 
 	input.Para.Time = time.Now().Unix()
 
-	input.Para.Type = r.PostFormValue("type")
+	input.Para.Type = params.Type
 
-	input.Para.Start = r.PostFormValue("start")
+	input.Para.Start = params.Start
 
-	input.Para.End = r.PostFormValue("end")
+	input.Para.End = params.End
 
-	input.Para.Cmmand = r.PostFormValue("cmd")
+	input.Para.Cmmand = params.Cmmand
 
 	input.Para.OfflineTag = "rule"
 
-	weight, err := strconv.Atoi(r.PostFormValue("weight"))
-	if nil != err {
-		weight = 1
-	}
-	input.Para.Weight = int(weight)
+	input.Para.Weight = params.Weight
 
-	details := r.PostFormValue("details")
+	details := params.Details
 	if details == "" {
 		input.Para.Details = fmt.Sprintf("%s offline dispatch", input.Para.Type)
 	} else {
 		input.Para.Details = input.Para.Name
 	}
 
+	fmt.Println(input)
+
 	return input
 }
-func RuleFile(r *http.Request, dstDir, formElement string) {
-	r.ParseMultipartForm(32 << 20)
-	file, handler, err := r.FormFile(formElement)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	defer file.Close()
 
-	f, err := os.OpenFile(dstDir+handler.Filename, os.O_WRONLY|os.O_CREATE, 0666)
+func GetDataString(req *http.Request) string {
+	result, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		fmt.Println(err)
-		return
+	} else {
+
 	}
-	defer f.Close()
-	io.Copy(f, file)
+	return bytes.NewBuffer(result).String()
 }
