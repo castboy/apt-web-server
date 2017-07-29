@@ -185,7 +185,7 @@ func (this *TblOLA) StartAssignment(para *TblOLASearchPara) (error, *CMDResult) 
 			fileType = "http"
 		}
 		pickerETCDKey = fmt.Sprintf("%s/%d", PickerETCDStatusKey, ugc.Id)
-		startPickerCmd = fmt.Sprintf(`%s %s %s %s %s -x %s -s %s -e %s -i %d -k %s 2>/dev/null &`,
+		startPickerCmd = fmt.Sprintf(`%s %s %s %s %s -x %s -s %s -e %s -i %d -k %s -t %s 2>/dev/null &`,
 			PyAbsPath,
 			SparkAbsPath,
 			SparkParaList,
@@ -195,7 +195,8 @@ func (this *TblOLA) StartAssignment(para *TblOLASearchPara) (error, *CMDResult) 
 			ugc.Start,
 			ugc.End,
 			ugc.Id,
-			ugc.Topic)
+			ugc.Topic,
+			"rule")
 	}
 	fmt.Println(pickerETCDKey, startPickerCmd)
 
