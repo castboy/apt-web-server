@@ -71,7 +71,9 @@ func Params(r *http.Request) (input OLPOGetInput) {
 
 	input.Para.Weight = params.Weight
 
-	input.Para.Details = params.Details
+	input.Para.Details = fmt.Sprintf("%s offline dispatch", input.Para.Type)
+
+	input.Para.Rule = params.Rule
 
 	fmt.Println(input)
 

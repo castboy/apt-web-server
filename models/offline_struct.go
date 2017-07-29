@@ -11,6 +11,7 @@ type TblOLASearchPara struct {
 	End        string `json:"end"`
 	Weight     int    `json:"weight"`
 	OfflineTag string
+	Rule       string `json:"rule"`
 	Details    string `json:"details"`
 	//	Status string
 }
