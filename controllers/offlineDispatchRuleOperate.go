@@ -4,6 +4,7 @@ package controllers
 import (
 	"apt-web-server/models"
 	"bytes"
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -19,10 +20,14 @@ func (this *OLPOController) Post(w http.ResponseWriter, r *http.Request, _ httpr
 	var err error
 
 	input := Params(r)
+	ruleBytes, err := base64.StdEncoding.DecodeString(input.Para.Details)
+	if nil != err {
+		//TODO log
+	}
 
 	switch input.Para.Cmmand {
 	case "creat":
-		WriteFile("/tmp/rules", input.Para.Name+".conf", []byte(input.Para.Details))
+		WriteFile("/tmp/rules", input.Para.Name+".conf", ruleBytes)
 
 		err, list = new(models.TblOLA).CreatAssignment(&input.Para)
 	case "delete":
