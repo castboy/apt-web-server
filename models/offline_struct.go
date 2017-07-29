@@ -3,13 +3,13 @@ package models
 /************离线任务存储结构*************/
 //OLA:"Off_Line Assignment"
 type TblOLASearchPara struct {
-	Cmmand     string
-	Name       string
-	Time       int64
-	Type       string
-	Start      string
-	End        string
-	Weight     int
+	Cmmand     string `json:"cmd"`
+	Name       string `json:"name"`
+	Time       int64  `json:"time"`
+	Type       string `json:"type"`
+	Start      string `json:"start"`
+	End        string `json:"end"`
+	Weight     int    `json:"weight"`
 	OfflineTag string
 	Details    string
 	//	Status string
