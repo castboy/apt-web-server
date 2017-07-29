@@ -20,7 +20,7 @@ func (this *OLPOController) Post(w http.ResponseWriter, r *http.Request, _ httpr
 	var err error
 
 	input := Params(r)
-	ruleBytes, err := base64.StdEncoding.DecodeString(input.Para.Details)
+	ruleBytes, err := base64.StdEncoding.DecodeString(input.Para.Rule)
 	if nil != err {
 		//TODO log
 	}
