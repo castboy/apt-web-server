@@ -159,6 +159,7 @@ func GetEtcdAgent(agentType, topicName, key, ipPort string) (int, int, error) {
 		mlog.Debug("GetEtcdAgetn's EtcdCmd get from ", ipPort, key, " error:", err)
 		return -1, -1, err
 	}
+	fmt.Println("agentEtcdStr:", agentEtcdStr)
 	count, total, err := GetEngenStatus(agentType, []byte(agentEtcdStr), topicName)
 	if err != nil {
 		mlog.Debug("GetEtcdAgent GetEngenStatus error:", err)
