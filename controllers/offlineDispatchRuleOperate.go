@@ -57,7 +57,7 @@ func Params(r *http.Request) (input OLPOGetInput) {
 
 	input.Para.Name = params.Name
 
-	input.Para.Time = time.Now().Unix()
+	input.Para.Time = params.Time
 
 	input.Para.Type = params.Type
 
