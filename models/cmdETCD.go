@@ -20,6 +20,9 @@ type Conf struct {
 }
 
 func EtcdCmd(cmd, key, value, ipPort string) (rtn string, err error) {
+	fmt.Println("key", key)
+	fmt.Println("val", value)
+	fmt.Println("ipPort", ipPort)
 	etcdError := fmt.Sprintf("etcd ", cmd, "error!")
 	etcdCmdError := errors.New(etcdError)
 	defer func() {

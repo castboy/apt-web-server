@@ -222,6 +222,7 @@ func (this *TblOLA) StartAssignment(para *TblOLASearchPara) (error, *CMDResult) 
 	/******创建picker etcd******/
 	fmt.Println("######创建 picker_etcd!######")
 	_, err = EtcdCmd("put", pickerETCDKey, "", PickerETCDIpPort)
+
 	if err != nil {
 		mlog.Debug("pickeretcd creat error:", err)
 		res_t.Result = "faild"
