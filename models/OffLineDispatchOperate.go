@@ -74,7 +74,7 @@ const (
 func (this *TblOLA) TableName(offlineTag string) string {
 	var tbl string
 	if "rule" == offlineTag {
-		tbl = "rule_offline_assignment"
+		tbl = "offline_assignment_rule"
 	} else {
 		tbl = "offline_assignment"
 	}
