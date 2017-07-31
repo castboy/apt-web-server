@@ -159,6 +159,8 @@ func (this *TblOLA) StartAssignment(para *TblOLASearchPara) (error, *CMDResult) 
 			&ugc.Weight,
 			&ugc.Topic,
 			&ugc.Status)
+
+		fmt.Println("ugc.Id:", urg.Id, "ugc:", ugc)
 		if err != nil {
 			return err, nil
 		}
