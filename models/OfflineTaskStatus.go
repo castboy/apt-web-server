@@ -29,6 +29,7 @@ func (this *TblOLA) GetStatus(paraName string, paraTime int64, paraOfflineTag st
 		paraName,
 		paraTime)
 	rows, err := db.Query(string(query))
+	fmt.Println("query++++++++++++++++++++++++++++++++")
 	fmt.Println(query)
 	if err != nil {
 		//return err, nil
