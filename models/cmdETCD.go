@@ -79,12 +79,11 @@ func EtcdCmd(cmd, key, value, ipPort string) (rtn string, err error) {
 }
 
 func GetEngenStatus(agentType string, agentstatus []byte, topicName string) (int, int, error) {
-	var EngenType [2]map[string]ETCDAgent
-	var Waf map[string]ETCDAgent
-	var Vds map[string]ETCDAgent
+	var EngenType [3]map[string]ETCDAgent
+	var Waf = make(map[string]ETCDAgent, 1000)
+	var Vds = make(map[string]ETCDAgent, 1000)
+	var Rule = make(map[string]ETCDAgent, 1000)
 
-	Waf = make(map[string]ETCDAgent, 1000)
-	Vds = make(map[string]ETCDAgent, 1000)
 	err := json.Unmarshal(agentstatus, &EngenType)
 	if err != nil {
 		mlog.Debug("GettEngenStatus json Unmarshal Err")
@@ -93,9 +92,14 @@ func GetEngenStatus(agentType string, agentstatus []byte, topicName string) (int
 
 	Waf = EngenType[0]
 	Vds = EngenType[1]
+	Rule = EngenType[2]
+
 	fmt.Println("Vds[topicName]=", Vds[topicName], "Waf[topicName]=", Waf[topicName])
 	if agentType == "vds" {
 		return Vds[topicName].Engine + Vds[topicName].Err, Vds[topicName].Last, nil
+	}
+	if agentType == "rule" {
+		return Rule[topicName].Engine + Rule[topicName].Err, Rule[topicName].Last, nil
 	}
 	return Waf[topicName].Engine + Waf[topicName].Err, Waf[topicName].Last, nil
 }
