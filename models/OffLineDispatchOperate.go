@@ -376,7 +376,7 @@ func (this *TblOLA) StartAssignment(para *TblOLASearchPara) (error, *CMDResult) 
 
 func (this *TblOLA) UpgradeStatus(column, value string, taskID int) error {
 	query := fmt.Sprintf(`update %s set %s='%s' where id=%d;`,
-		this.TableName(""),
+		this.TableName("rule"),
 		column,
 		value,
 		taskID)
