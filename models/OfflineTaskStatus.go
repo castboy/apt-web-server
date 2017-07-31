@@ -9,8 +9,9 @@ import (
 func (this *TblOLA) GetTaskStatus(para *TaskListPara) (error, *[]TaskStatusList) {
 	var s []TaskStatusRequestPara
 	var list []TaskStatusList
-	json.Unmarshal([]byte(para.TaskList), &s)
 	fmt.Println(para.TaskList)
+	json.Unmarshal([]byte(para.TaskList), &s)
+
 	for out := range s {
 		statusElement := new(TaskStatusList)
 		_, statusElement = this.GetStatus(s[out].Name, int64(s[out].Time), para.OfflineTag)

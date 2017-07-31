@@ -43,7 +43,7 @@ const (
 /************default config************/
 var (
 	AgentStatusETCDSlice = []string{
-		"apt/agent/status/10.88.1.103"}
+		"apt/agent/status/192.168.1.103"}
 	//"apt/agent/status/192.168.1.105"}
 	AgentStatusETCDIpPort = []string{
 		"http://10.88.1.103:2379"}
