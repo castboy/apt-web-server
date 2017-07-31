@@ -27,6 +27,7 @@ func (this *TSLController) Rule(w http.ResponseWriter, r *http.Request, _ httpro
 		fmt.Println("the task list is null")
 	} else {
 		input.Para.TaskList = tasklist
+		fmt.Println("tasklist:", tasklist)
 	}
 
 	input.Para.OfflineTag = "rule"
