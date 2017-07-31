@@ -51,7 +51,6 @@ var (
 )
 
 const (
-	//Abs:"Absolute"
 	PyAbsPath           = "PYSPARK_PYTHON=/usr/local/bin/python2.7"
 	SparkAbsPath        = "/home/spark-2.1.1-bin-hadoop2.6/bin/spark-submit"
 	SparkParaList       = "--master yarn --deploy-mode cluster --name"
