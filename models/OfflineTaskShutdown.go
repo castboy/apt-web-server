@@ -82,7 +82,7 @@ func (this *TblOLA) ShutDownAssignment(para *TblOLASearchPara) (error, *CMDResul
 	}
 	/***************************/
 	/******设置任务状态******/
-	err = this.UpgradeStatus("status", "shutdown", taskId)
+	err = this.UpgradeStatus("status", "shutdown", taskId, para.OfflineTag)
 	if err != nil {
 		fmt.Println("set task ", taskId, " error!")
 	}

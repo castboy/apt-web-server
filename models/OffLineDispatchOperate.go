@@ -177,7 +177,7 @@ func (this *TblOLA) StartAssignment(para *TblOLASearchPara) (error, *CMDResult) 
 			res_t.Result = "this task is running!"
 			return nil, &res_t
 		} else if ugc.Status == "ready" || ugc.Status == "error" {
-			err := this.UpgradeStatus("status", "running", taskID)
+			err := this.UpgradeStatus("status", "running", taskID, para.OfflineTag)
 			if err != nil {
 				mlog.Debug("Update status task ", taskID, "to running error")
 				res_t.Result = "Update task to running error"
@@ -250,11 +250,11 @@ func (this *TblOLA) StartAssignment(para *TblOLASearchPara) (error, *CMDResult) 
 	_, err = EtcdCmd("put", agentEtcdCmdKey, string(paraAgent), AgentETCDCmdIpPort)
 	if err != nil {
 		res_t.Result = "faild"
-		statuserr := this.UpgradeStatus("status", "error", taskID)
+		statuserr := this.UpgradeStatus("status", "error", taskID, para.OfflineTag)
 		if statuserr != nil {
 			mlog.Debug("agent start error and update status error to task ", taskID, " error")
 		}
-		detailserr := this.UpgradeStatus("details", "start agent faild", taskID)
+		detailserr := this.UpgradeStatus("details", "start agent faild", taskID, para.OfflineTag)
 		if detailserr != nil {
 			mlog.Debug("agent start error and update details error to task ", taskID, " error")
 		}
@@ -270,7 +270,7 @@ func (this *TblOLA) StartAssignment(para *TblOLASearchPara) (error, *CMDResult) 
 		if err != nil {
 			mlog.Debug("task ", taskID, " jsonMarshal agentPar.SignalType=stop error:", err)
 		}
-		this.WatchEtcdPicker(pickerETCDKey, PickerETCDIpPort, string(agentStop), taskID)
+		this.WatchEtcdPicker(pickerETCDKey, PickerETCDIpPort, string(agentStop), taskID, para.OfflineTag)
 	}()
 	/*****************************/
 
@@ -321,7 +321,7 @@ func (this *TblOLA) StartAssignment(para *TblOLASearchPara) (error, *CMDResult) 
 							mlog.Debug("duplicate alert_waf_offline error")
 						}
 					}
-					err := this.UpgradeStatus("status", "complete", taskID)
+					err := this.UpgradeStatus("status", "complete", taskID, para.OfflineTag)
 					if err != nil {
 						mlog.Debug("task ", taskID, " complete but update status error!")
 					}
@@ -334,11 +334,11 @@ func (this *TblOLA) StartAssignment(para *TblOLASearchPara) (error, *CMDResult) 
 				} else if chCount < agentListNum {
 					agentPar.SignalType = "error"
 					mlog.Debug("task ", taskID, " WatchEtcdAgent error!")
-					upStaErr := this.UpgradeStatus("status", "error", taskID)
+					upStaErr := this.UpgradeStatus("status", "error", taskID, para.OfflineTag)
 					if upStaErr != nil {
 						mlog.Debug("task ", taskID, " WatchEtcdAgent error and update status error!")
 					}
-					upDetErr := this.UpgradeStatus("details", "WatchEtcdAgent Error!", taskID)
+					upDetErr := this.UpgradeStatus("details", "WatchEtcdAgent Error!", taskID, para.OfflineTag)
 					if upDetErr != nil {
 						mlog.Debug("task ", taskID, " WatchEtcdAgent error and update status error!")
 					}
@@ -374,9 +374,9 @@ func (this *TblOLA) StartAssignment(para *TblOLASearchPara) (error, *CMDResult) 
 	return nil, &res_t
 }
 
-func (this *TblOLA) UpgradeStatus(column, value string, taskID int) error {
+func (this *TblOLA) UpgradeStatus(column, value string, taskID int, tableTag string) error {
 	query := fmt.Sprintf(`update %s set %s='%s' where id=%d;`,
-		this.TableName("rule"),
+		this.TableName(tableTag),
 		column,
 		value,
 		taskID)

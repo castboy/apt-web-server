@@ -190,11 +190,11 @@ func (this *TblOLA) WatchEtcdAgent(agentType, key, ipPort, topicName, agentEtcdC
 		if info := recover(); info != nil {
 			//log.Fatal("watchetcdagent get panic:", info, "context.backgroud=", context.Background(), "key=", key, "perfix=", clientv3.WithPrefix())
 			mlog.Debug("WatchEtcdAgent ", ipPort, key, " error:", info)
-			err := this.UpgradeStatus("status", "error", taskId)
+			err := this.UpgradeStatus("status", "error", taskId, agentType)
 			if err != nil {
 				mlog.Debug("WatchEtcdAgent update status error")
 			}
-			err = this.UpgradeStatus("details", "watchEtcdAgent error", taskId)
+			err = this.UpgradeStatus("details", "watchEtcdAgent error", taskId, agentType)
 			if err != nil {
 				mlog.Debug("WatchEtcdAgent update details error")
 			}
@@ -239,16 +239,16 @@ BREAKTAG:
 	fmt.Println("stop AgentETCD watcher")
 }
 
-func (this *TblOLA) WatchEtcdPicker(key, ipPort, agentPar string, id int) {
+func (this *TblOLA) WatchEtcdPicker(key, ipPort, agentPar string, id int, tableTag string) {
 	defer func() {
 		if info := recover(); info != nil {
 			//log.Fatal("watchetcdpicer get panic:", info, "context.backgroud=", context.Background(), "key=", key, "perfix=", clientv3.WithPrefix())
 			mlog.Debug("WatchEtcdPicker ", ipPort, key, " error:", info)
-			err := this.UpgradeStatus("status", "error", id)
+			err := this.UpgradeStatus("status", "error", id, tableTag)
 			if err != nil {
 				mlog.Debug("WatchEtcdPicker's update status error:", err)
 			}
-			err = this.UpgradeStatus("details", "watchEtcdPicker error", id)
+			err = this.UpgradeStatus("details", "watchEtcdPicker error", id, tableTag)
 			if err != nil {
 				mlog.Debug("WatchEtcdPicker's update details error:", err)
 			}

@@ -10,6 +10,7 @@ func (this *TblOLA) GetTaskStatus(para *TaskListPara) (error, *[]TaskStatusList)
 	var s []TaskStatusRequestPara
 	var list []TaskStatusList
 	json.Unmarshal([]byte(para.TaskList), &s)
+	fmt.Println(para.TaskList)
 	for out := range s {
 		statusElement := new(TaskStatusList)
 		_, statusElement = this.GetStatus(s[out].Name, int64(s[out].Time), para.OfflineTag)
@@ -87,7 +88,7 @@ func (this *TblOLA) GetStatus(paraName string, paraTime int64, paraOfflineTag st
 	}
 
 	if statusReq.PickerPercent == 100 && statusReq.AgentPercent == 100 && statusReq.Status != "complete" {
-		err := this.UpgradeStatus("status", "complete", taskID)
+		err := this.UpgradeStatus("status", "complete", taskID, paraOfflineTag)
 		if err != nil {
 			fmt.Println("set task ", taskID, " status error!")
 			return nil, &statusReq
