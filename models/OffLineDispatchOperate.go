@@ -46,7 +46,7 @@ var (
 		"apt/agent/status/192.168.1.103"}
 	//"apt/agent/status/192.168.1.105"}
 	AgentStatusETCDIpPort = []string{
-		"http://10.88.1.103:2379"}
+		"http://192.168.1.103:2379"}
 	//"http://10.88.1.105:2379"}
 )
 
