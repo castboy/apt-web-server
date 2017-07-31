@@ -58,7 +58,7 @@ func Params(r *http.Request) (input OLPOGetInput) {
 
 	input.Para.Time = params.Time
 
-	input.Para.Type = params.Type
+	input.Para.Type = "rule"
 
 	input.Para.Start = params.Start
 
