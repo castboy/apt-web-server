@@ -43,10 +43,10 @@ const (
 /************default config************/
 var (
 	AgentStatusETCDSlice = []string{
-		"apt/agent/status/192.168.1.103"}
+		"apt/agent/status/10.88.1.103"}
 	//"apt/agent/status/192.168.1.105"}
 	AgentStatusETCDIpPort = []string{
-		"http://192.168.1.103:2379"}
+		"http://10.88.1.103:2379"}
 	//"http://10.88.1.105:2379"}
 )
 
@@ -57,17 +57,17 @@ const (
 	SparkParaList       = "--master yarn --deploy-mode cluster --name"
 	PickerScrAbsPath    = "/home/apt/picker.py"
 	AgentETCDCmdKey     = "apt/agent/offlineReq"
-	AgentETCDCmdIpPort  = "http://192.168.1.103:2379"
-	KafkaTopicIpPort    = "192.168.1.103:2181"
+	AgentETCDCmdIpPort  = "http://10.88.1.103:2379"
+	KafkaTopicIpPort    = "10.88.1.103:2181"
 	PickerETCDStatusKey = "picker"
 	ShutdownPicker      = "/bin/bash /home/apt/stopYarnApp.sh"
-	PickerETCDIpPort    = "http://192.168.1.103:2379"
+	PickerETCDIpPort    = "http://10.88.1.103:2379"
 	TopicSSHUser        = "root"
 	TopicSSHPass        = "aaaaaa"
-	TopicSSHIP          = "192.168.1.103"
+	TopicSSHIP          = "10.88.1.103"
 	PickerSSHUser       = "root"
 	PickerSSHPass       = "aaaaaa"
-	PickerSSHIP         = "192.168.1.103"
+	PickerSSHIP         = "10.88.1.103"
 	SSHPort             = 22
 )
 
