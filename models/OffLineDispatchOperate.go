@@ -191,6 +191,8 @@ func (this *TblOLA) StartAssignment(para *TblOLASearchPara) (error, *CMDResult) 
 			fileType = "file"
 		case "waf":
 			fileType = "http"
+		case "rule":
+			fileType = "http"
 		}
 		pickerETCDKey = fmt.Sprintf("%s/%d", PickerETCDStatusKey, ugc.Id)
 		startPickerCmd = fmt.Sprintf(`%s %s %s %s %s -x %s -s %s -e %s -i %d -k %s -t %s 2>/dev/null &`,
