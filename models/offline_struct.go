@@ -62,7 +62,6 @@ type CMDResult struct {
 }
 
 type AgentPara struct {
-	OfflineTag string `json:"OfflineTag"`
 	Engine     string `json:"Engine"`
 	Topic      string `json:"Topic"`
 	Weight     int    `json:"Weight"`
