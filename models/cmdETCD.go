@@ -19,6 +19,11 @@ type Conf struct {
 	Topic         []string
 }
 
+type StatusFromEtcd struct {
+	ReceivedOfflineMsgOffset int64
+	Status                   [3]map[string]ETCDAgent
+}
+
 func EtcdCmd(cmd, key, value, ipPort string) (rtn string, err error) {
 	fmt.Println("key", key)
 	fmt.Println("val", value)
@@ -79,20 +84,20 @@ func EtcdCmd(cmd, key, value, ipPort string) (rtn string, err error) {
 }
 
 func GetEngenStatus(agentType string, agentstatus []byte, topicName string) (int, int, error) {
-	var EngenType [3]map[string]ETCDAgent
+	var s StatusFromEtcd
 	var Waf = make(map[string]ETCDAgent, 1000)
 	var Vds = make(map[string]ETCDAgent, 1000)
 	var Rule = make(map[string]ETCDAgent, 1000)
 
-	err := json.Unmarshal(agentstatus, &EngenType)
+	err := json.Unmarshal(agentstatus, &s)
 	if err != nil {
 		mlog.Debug("GettEngenStatus json Unmarshal Err")
 		return -1, -1, err
 	}
 
-	Waf = EngenType[0]
-	Vds = EngenType[1]
-	Rule = EngenType[2]
+	Waf = s.Status[0]
+	Vds = s.Status[1]
+	Rule = s.Status[2]
 
 	fmt.Println("Vds[topicName]=", Vds[topicName], "Waf[topicName]=", Waf[topicName])
 	if agentType == "vds" {
