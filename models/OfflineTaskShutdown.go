@@ -4,7 +4,7 @@ import (
 	"apt-web-server/modules/mlog"
 	"encoding/json"
 	"fmt"
-	"time"
+	//	"time"
 )
 
 func (this *TblOLA) ShutDownAssignment(para *TblOLASearchPara) (error, *CMDResult) {
@@ -51,20 +51,18 @@ func (this *TblOLA) ShutDownAssignment(para *TblOLASearchPara) (error, *CMDResul
 			mlog.Debug("picker shutdown fail!")
 		}
 	}
-	/*************************************************/
-	/******获取agent状态并向agent发送shutdown消息******/
-	agentPar.SignalType = "shutdown"
-	agentCmdKey := fmt.Sprintf("%s/%d", AgentETCDCmdKey, taskId)
-	agentCmdShutdown, _ := json.Marshal(agentPar)
 
-	_, err = EtcdCmd("put", agentCmdKey, string(agentCmdShutdown), AgentETCDCmdIpPort)
-	if err != nil {
-		mlog.Debug("send agent shutdown error")
-		res_t.Result = "agent shutdown fail!"
-		return nil, &res_t
+	//向agent发送"shutdown"消息
+	agentPar.SignalType = "shutdown"
+	agentCmdShutdown, err := json.Marshal(agentPar)
+	if nil != err {
+		mlog.Debug("`shutdown` json.Marshal err")
 	}
-	time.Sleep(3 * time.Second)
-	/*********************************/
+	err = SendOfflineMsg(agentCmdShutdown)
+	if nil != err {
+		mlog.Debug("send `shutdown` msg failed")
+	}
+
 	/******删除etcd和topic ******/
 	_, err = EtcdCmd("delete", pickerKey, "", PickerETCDIpPort)
 	if err != nil {

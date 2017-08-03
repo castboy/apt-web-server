@@ -2,6 +2,7 @@
 package controllers
 
 import (
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -29,7 +30,7 @@ func (this *RULEController) Get(w http.ResponseWriter, r *http.Request, _ httpro
 		topic = val[0]
 	}
 
-	cont := RdFile(RULESDIR + "/" + topic)
+	cont := RdFile(RULESDIR + "/" + topic + ".conf")
 	res := struct {
 		Rule string
 		Cont string
@@ -53,5 +54,8 @@ func RdFile(file string) string {
 	defer fHdl.Close()
 
 	fd, _ := ioutil.ReadAll(fHdl)
-	return string(fd)
+
+	cont := base64.StdEncoding.EncodeToString(fd)
+
+	return string(cont)
 }

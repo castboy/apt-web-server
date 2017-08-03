@@ -287,7 +287,6 @@ BREAKTAG:
 
 func WatchPicker(pickerValue, agentPar string, id int) int {
 	var pickerStr ETCDPicker
-	agentEtcdCmdKey := fmt.Sprintf(`%s/%d`, AgentETCDCmdKey, id)
 	json.Unmarshal([]byte(pickerValue), &pickerStr)
 	/*
 		query := fmt.Sprintf(`update %s set status='%s' where id=%d;`,
@@ -302,9 +301,10 @@ func WatchPicker(pickerValue, agentPar string, id int) int {
 		defer rows.Close()
 	*/
 	if pickerStr.State == "stop" && pickerStr.Offset == pickerStr.End && pickerStr.Total != 0 {
-		_, err := EtcdCmd("put", agentEtcdCmdKey, agentPar, AgentETCDCmdIpPort)
-		if err != nil {
-			mlog.Debug("WhtchPicker send stop cmd to agent etcd error!")
+		//向agent发送"stop"消息
+		err := SendOfflineMsg([]byte(agentPar))
+		if nil != err {
+			mlog.Debug("send `stop` msg failed")
 		}
 		fmt.Println("WatchPicker finished！")
 		return 0

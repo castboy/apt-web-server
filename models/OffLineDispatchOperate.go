@@ -68,6 +68,10 @@ const (
 	PickerSSHPass       = "aaaaaa"
 	PickerSSHIP         = "10.88.1.103"
 	SSHPort             = 22
+
+	TOPIC     = "offline_msg"
+	PARTITION = 0
+	KAFKA     = "192.168.1.103"
 )
 
 func (this *TblOLA) TableName(offlineTag string) string {
@@ -261,6 +265,17 @@ func (this *TblOLA) StartAssignment(para *TblOLASearchPara) (error, *CMDResult) 
 	}
 	/*********************/
 
+	//向agent发送"start"消息
+	agentPar.SignalType = "start"
+	paraAgent, err = json.Marshal(agentPar)
+	if nil != err {
+		mlog.Debug("`start` json.Marshal err")
+	}
+	err = SendOfflineMsg(paraAgent)
+	if nil != err {
+		mlog.Debug("send `start` msg failed")
+	}
+
 	/*******监控 picker_etcd*******/
 	fmt.Println("######监控picker_etcd start######")
 	go func() {
@@ -342,13 +357,17 @@ func (this *TblOLA) StartAssignment(para *TblOLASearchPara) (error, *CMDResult) 
 						mlog.Debug("task ", taskID, " WatchEtcdAgent error and update status error!")
 					}
 				}
-				/******通知agent任务完成******/
-				agentCmdComplete, _ := json.Marshal(agentPar)
-				_, err = EtcdCmd("put", agentEtcdCmdKey, string(agentCmdComplete), AgentETCDCmdIpPort)
-				if err != nil {
-					mlog.Debug("task ", taskID, " complete but put status to agentetcd error!")
+
+				//向agent发送'complete'消息
+				agentCmdComplete, err := json.Marshal(agentPar)
+				if nil != err {
+					mlog.Debug("`complete` json.Marshal err")
 				}
-				/******删除topic和etcd******/
+				err = SendOfflineMsg(agentCmdComplete)
+				if nil != err {
+					mlog.Debug("send `complete` msg failed")
+				}
+
 				err = SSHCmd(TopicSSHUser, TopicSSHPass, TopicSSHIP, delTopicCmd, SSHPort)
 				if err != nil {
 					mlog.Debug("delete topic error!")
