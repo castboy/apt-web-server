@@ -51,22 +51,23 @@ var (
 )
 
 const (
+	IP                  = "192.168.1.103"
 	PyAbsPath           = "PYSPARK_PYTHON=/usr/local/bin/python2.7"
 	SparkAbsPath        = "/home/spark-2.1.1-bin-hadoop2.6/bin/spark-submit"
 	SparkParaList       = "--master yarn --deploy-mode cluster --name"
 	PickerScrAbsPath    = "/home/apt/picker.py"
 	AgentETCDCmdKey     = "apt/agent/offlineReq"
-	AgentETCDCmdIpPort  = "http://10.88.1.103:2379"
-	KafkaTopicIpPort    = "10.88.1.103:2181"
+	AgentETCDCmdIpPort  = "http://" + IP + ":2379"
+	KafkaTopicIpPort    = IP + ":2181"
 	PickerETCDStatusKey = "picker"
 	ShutdownPicker      = "/bin/bash /home/apt/stopYarnApp.sh"
-	PickerETCDIpPort    = "http://10.88.1.103:2379"
+	PickerETCDIpPort    = "http://" + IP + ":2379"
 	TopicSSHUser        = "root"
 	TopicSSHPass        = "aaaaaa"
-	TopicSSHIP          = "10.88.1.103"
+	TopicSSHIP          = IP
 	PickerSSHUser       = "root"
 	PickerSSHPass       = "aaaaaa"
-	PickerSSHIP         = "10.88.1.103"
+	PickerSSHIP         = IP
 	SSHPort             = 22
 
 	TOPIC     = "offline_msg"
