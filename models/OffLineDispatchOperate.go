@@ -347,7 +347,7 @@ func (this *TblOLA) StartAssignment(para *TblOLASearchPara) (error, *CMDResult) 
 					fmt.Println("task ", taskID, " shutdown!")
 					goto WATCHAGENTOUT
 				} else if chCount < agentListNum {
-					agentPar.SignalType = "error"
+					agentPar.SignalType = "shutdown"
 					mlog.Debug("task ", taskID, " WatchEtcdAgent error!")
 					upStaErr := this.UpgradeStatus("status", "error", taskID, para.OfflineTag)
 					if upStaErr != nil {
