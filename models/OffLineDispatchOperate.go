@@ -173,6 +173,7 @@ func (this *TblOLA) StartAssignment(para *TblOLASearchPara) (error, *CMDResult) 
 		topicName = ugc.Topic
 		agentPar.Engine = taskType
 		agentPar.Topic = topicName
+		agentPar.Weight = ugc.Weight
 
 		/******判断任务运行状态，避免重复运行******/
 
