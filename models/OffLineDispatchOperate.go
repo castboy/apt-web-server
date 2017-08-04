@@ -211,7 +211,7 @@ func (this *TblOLA) StartAssignment(para *TblOLASearchPara) (error, *CMDResult) 
 			ugc.End,
 			ugc.Id,
 			ugc.Topic,
-			"rule")
+			para.OfflineTag)
 	}
 	fmt.Println(pickerETCDKey, startPickerCmd)
 
