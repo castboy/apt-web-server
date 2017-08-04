@@ -38,6 +38,13 @@ func (this *OLPOController) Get(w http.ResponseWriter, r *http.Request, _ httpro
 	cmdtype := queryForm.Get("type")
 	input.Para.Type = cmdtype
 
+	offlinetag := queryForm.Get("offlinetag")
+	if offlinetag == "" {
+		input.Para.OfflineTag = "offline"
+	} else {
+		input.Para.OfflineTag = offlinetag
+	}
+
 	start := queryForm.Get("start")
 	if err != nil {
 		//start = 0
