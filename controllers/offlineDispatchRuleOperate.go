@@ -10,6 +10,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"strconv"
 
 	"github.com/julienschmidt/httprouter"
 )
@@ -26,7 +27,9 @@ func (this *OLPOController) Post(w http.ResponseWriter, r *http.Request, _ httpr
 
 	switch input.Para.Cmmand {
 	case "creat":
-		WriteFile("/tmp/rules", input.Para.Name+".conf", ruleBytes)
+		file := fmt.Sprintf("%s%s%s.conf", input.Para.Type,
+			strconv.FormatInt(input.Para.Time, 10), input.Para.Name)
+		WriteFile("/tmp/rules", file, ruleBytes)
 
 		err, list = new(models.TblOLA).CreatAssignment(&input.Para)
 	case "delete":
@@ -54,26 +57,18 @@ func Params(r *http.Request) (input OLPOGetInput) {
 
 	json.Unmarshal(bytes, &params)
 
-	input.Para.Name = params.Name
-
-	input.Para.Time = params.Time
-
-	input.Para.Type = "rule"
-
-	input.Para.Start = params.Start
-
-	input.Para.End = params.End
-
-	input.Para.Cmmand = params.Cmmand
-
-	input.Para.OfflineTag = "rule"
-
-	input.Para.Weight = params.Weight
-
-	input.Para.Details = fmt.Sprintf("%s offline dispatch", input.Para.Type)
-
-	input.Para.Rule = params.Rule
-
+	input.Para = models.TblOLASearchPara{
+		Cmmand:     params.Cmmand,
+		Name:       params.Name,
+		Time:       params.Time,
+		Type:       "rule",
+		Start:      params.Start,
+		End:        params.End,
+		Weight:     params.Weight,
+		OfflineTag: "rule",
+		Rule:       params.Rule,
+		Details:    fmt.Sprintf("%s offline dispatch", input.Para.Type),
+	}
 	fmt.Println(input)
 
 	return input
