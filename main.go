@@ -19,6 +19,7 @@ func init() {
 }
 
 func route() {
+	es.InitLog()
 	es.RegisterKeyword()
 	routerA = httprouter.New()
 	routerA.GET("/byzoro.apt.com/urgencies/list/day", controllers.UgcDObj.Get)
