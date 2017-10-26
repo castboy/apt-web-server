@@ -6,7 +6,6 @@ import (
 	"apt-web-server/modules/mlog"
 	"net/http"
 
-	"github.com/castboy/es_ui_api"
 	es "github.com/castboy/es_ui_api/modules"
 	"github.com/julienschmidt/httprouter"
 )
@@ -47,7 +46,7 @@ func route() {
 	routerA.GET("/byzoro.apt.com/off-line-dispatch/rule/tasklist", controllers.TLObj.Rule)
 	routerA.GET("/byzoro.apt.com/off-line-dispatch/rule/taskstatus", controllers.TSLObj.Rule)
 	routerA.GET("/byzoro.apt.com/off-line-dispatch/rule/request", controllers.RULEObj.Get)
-	routerA.GET("/byzoro.apt.com/es-alert-search", es_ui_api.Server)
+	routerA.GET("/byzoro.apt.com/es-alert-search", es.Server)
 
 	return
 }
