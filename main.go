@@ -7,6 +7,7 @@ import (
 	"net/http"
 
 	"github.com/castboy/es_ui_api"
+	es "github.com/castboy/es_ui_api/modules"
 	"github.com/julienschmidt/httprouter"
 )
 
@@ -19,6 +20,7 @@ func init() {
 }
 
 func route() {
+	es.RegisterKeyword()
 	routerA = httprouter.New()
 	routerA.GET("/byzoro.apt.com/urgencies/list/day", controllers.UgcDObj.Get)
 	routerA.GET("/byzoro.apt.com/urgency/trend/day", controllers.UrgencyObj.Get)
