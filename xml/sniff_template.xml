@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<upload_info upload_template_count="1">
+	<upload_param_template template_id="1" srv_cnt="2" upload_method="ftp" upload_mode="blance">
+		<srv_info>
+			<srv_ip>10.88.1.105</srv_ip>
+			<srv_port>21</srv_port>
+			<srv_user>ftp</srv_user>
+			<srv_pwd>apt.123</srv_pwd>
+		</srv_info>
+	</upload_param_template>
+</upload_info>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<servers version="1">
+    <server>
+        <serverName>pre</serverName>
+		<serverInfo type="ftp">
+			<serverIP>10.88.1.105</serverIP>
+			<serverPort>21</serverPort>
+			<serverUser>ftp</serverUser>
+			<serverPwd>apt.123</serverPwd>
+			<serverPath>sniff</serverPath>
+		</serverInfo>
+    </server>
+</servers>

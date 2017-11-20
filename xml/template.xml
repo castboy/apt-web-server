@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<upload_info upload_template_count="11">
+	<upload_param_template template_id="1" srv_cnt="1" upload_method="ftp">
+		<srv_info>
+			<srv_ip>10.94.1.207</srv_ip>
+			<srv_port>21</srv_port>
+			<srv_user>test</srv_user>
+			<srv_pwd>aaaaaa</srv_pwd>
+			<srv_path>/log/xdr/</srv_path>
+		</srv_info>
+	</upload_param_template>
+	<upload_param_template template_id="2" srv_cnt="1" upload_method="ftp">
+		<srv_info>
+			<srv_ip>192.168.1.207</srv_ip>
+			<srv_port>21</srv_port>
+			<srv_user>ftp</srv_user>
+			<srv_pwd>apt.123</srv_pwd>
+			<srv_path></srv_path>
+		</srv_info>
+	</upload_param_template>
+	<upload_param_template template_id="23" srv_cnt="1" upload_method="ftp">
+		<srv_info>
+			<srv_ip>192.168.1.207</srv_ip>
+			<srv_port>21</srv_port>
+			<srv_user>ftp</srv_user>
+			<srv_pwd>apt.123</srv_pwd>
+			<srv_path>/DPI/</srv_path>
+		</srv_info>
+	</upload_param_template>
+
+</upload_info>

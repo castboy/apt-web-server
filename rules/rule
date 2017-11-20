@@ -1,0 +1,1 @@
+p1|/pcap/p1/|"(src host 1.1.1.1 and dst host 1.2.1.1 and port 8888 ) or (src host 1.2.1.1 and dst host 1.1.1.1 and port 8888 )"

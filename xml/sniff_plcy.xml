@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <plcy_set plcy_count="2">
+  <plcy_version>110</plcy_version>
+  <plcy plcy_id="1" plcy_type="sniff" priority="600">
+   <control_condition count="3">
+    <condition count="1" type="src_ipv4">
+     <sub_condition count="1">
+      <content>1.1.1.1</content>
+     </sub_condition>
+    </condition>
+    <condition count="1" type="dst_ipv4">
+     <sub_condition count="1">
+      <content>1.2.1.1</content>
+     </sub_condition>
+    </condition>
+    <condition count="1" type="dst_port">
+     <sub_condition count="1">
+      <content>8888</content>
+     </sub_condition>
+    </condition>
+   </control_condition>
+   <exec_time start_date="1508498280" end_date="1508499480" period_type="none"></exec_time>
+  </plcy>
+  <plcy plcy_id="2" plcy_type="sniff" priority="600">
+   <control_condition count="3">
+    <condition count="1" type="src_ipv4">
+     <sub_condition count="1">
+      <content>1.2.1.1</content>
+     </sub_condition>
+    </condition>
+    <condition count="1" type="dst_ipv4">
+     <sub_condition count="1">
+      <content>1.1.1.1</content>
+     </sub_condition>
+    </condition>
+    <condition count="1" type="src_port">
+     <sub_condition count="1">
+      <content>8888</content>
+     </sub_condition>
+    </condition>
+   </control_condition>
+   <exec_time start_date="1508498280" end_date="1508499480" period_type="none"></exec_time>
+  </plcy>
+ </plcy_set>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<servers version="1">
+    <server>
+        <serverName>dpi1</serverName>
+		<serverInfo type="ftp">
+			<serverIP>10.88.1.2</serverIP>
+			<serverPort>21</serverPort>
+			<serverUser>test</serverUser>
+			<serverPwd>123456</serverPwd>
+			<serverPath>resource/PM_Upgrade</serverPath>
+			<serverDescpath>action-list/PM_Upgrade</serverDescpath>
+		</serverInfo>
+    </server>
+</servers>

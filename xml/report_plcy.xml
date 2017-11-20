@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plcy_set plcy_count="3">
+	<plcy_version>9</plcy_version>
+	<plcy plcy_id="796" plcy_refer_id="0" upload_type="xdr" upload_sub_type="xdr_acs" upload_param_template_id="2">
+		<upload_freq>300</upload_freq>
+		<upload_size>104857600</upload_size>
+		<upload_line>4294967295</upload_line>
+		<upload_path>/DPI/</upload_path>
+		<upload_delimiter>|</upload_delimiter>
+		<exec_time start_date="1420041600" end_date="1735660800" period_type="none">
+		</exec_time>
+		<upload_data>
+			<data_field type="data">room_name</data_field>
+			<data_field type="data">src_ip_str</data_field>
+			<data_field type="data">dst_ip_str</data_field>
+			<data_field type="data">l4_proto</data_field>
+			<data_field type="data">src_port</data_field>
+			<data_field type="data">dst_port</data_field>
+			<data_field type="data">host</data_field>
+			<data_field type="data">url</data_field>
+			<data_field type="data">ssn_duration</data_field>
+			<data_field type="data">access_time</data_field>
+		</upload_data>
+	</plcy>
+	<plcy plcy_id="801" plcy_refer_id="0" upload_type="xdr" upload_sub_type="xdr_sip" upload_param_template_id="2">
+		<upload_freq>300</upload_freq>
+		<upload_size>104857600</upload_size>
+		<upload_line>4294967295</upload_line>
+		<upload_path>/log/xdr/</upload_path>
+		<upload_delimiter>|</upload_delimiter>
+		<exec_time start_date="1420041600" end_date="1735660800" period_type="none">
+		</exec_time>
+		<upload_data>
+			<data_field type="data">room_name</data_field>
+			<data_field type="data">src_ip_str</data_field>
+			<data_field type="data">dst_ip_str</data_field>
+			<data_field type="data">l4_proto</data_field>
+			<data_field type="data">src_port</data_field>
+			<data_field type="data">dst_port</data_field>
+			<data_field type="data">host</data_field>
+			<data_field type="data">url</data_field>
+			<data_field type="data">ssn_duration</data_field>
+			<data_field type="data">access_time</data_field>
+		</upload_data>
+	</plcy>
+</plcy_set>

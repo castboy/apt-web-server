@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plcy_set plcy_count="4">
+	<plcy_version>80</plcy_version>
+	<plcy plcy_id="99" plcy_refer_id="0" upload_type="sniff" upload_sub_type="sniff" upload_param_template_id="1">
+		<upload_freq>60</upload_freq>
+		<upload_size>62914560</upload_size>
+		<upload_path>/sniff/pcap/</upload_path>
+		<upload_delimiter>|</upload_delimiter>
+	</plcy>
+</plcy_set>
