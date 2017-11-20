@@ -189,9 +189,13 @@ func GetEtcdAgentCmd(key, ipPort string) string {
 }
 
 func (this *TblOLA) WatchEtcdAgent(agentType, key, ipPort, topicName, agentEtcdCmdKey string, taskId int, chAgent chan int) {
-	timeOutUnit, _ := mconfig.Conf.Int("time", "Tout")
+	timeOutUnit, err := mconfig.Conf.Int("time", "Tout")
+	if nil != err {
+		timeOutUnit = 30
+	}
 	defer func() {
 		if info := recover(); info != nil {
+			chAgent <- 0
 			//log.Fatal("watchetcdagent get panic:", info, "context.backgroud=", context.Background(), "key=", key, "perfix=", clientv3.WithPrefix())
 			mlog.Debug("WatchEtcdAgent ", ipPort, key, " error:", info)
 			err := this.UpgradeStatus("status", "error", taskId, agentType)
@@ -217,17 +221,19 @@ func (this *TblOLA) WatchEtcdAgent(agentType, key, ipPort, topicName, agentEtcdC
 	defer cli.Close()
 	rch := cli.Watch(context.Background(), key, clientv3.WithPrefix())
 	out := make(chan bool)
-	tout := make(chan bool)
+
+	finish := make(chan bool)
 	timeOut := time.Duration(timeOutUnit) * time.Minute
 	go func() {
 		timed := time.NewTimer(timeOut)
 	TAG:
 		select {
+		case <-finish:
+			fmt.Println("offline task ", this.Id, "complete")
 		case <-timed.C:
 			mlog.Debug("etcd time out")
-			chAgent <- 0
-			tout <- true
-			break
+			//chAgent <- 0
+			panic("timeout")
 		case <-out:
 			mlog.Debug("time reset",time.Now())
 			timed.Reset(timeOut)
@@ -253,18 +259,15 @@ func (this *TblOLA) WatchEtcdAgent(agentType, key, ipPort, topicName, agentEtcdC
 			} else if "shutdown" == cmdStatus || cmdStatus == "" {
 				fmt.Println("send shutdown to agent etcd!")
 				chAgent <- 2
-				fmt.Println("task shutdown!!!!!!!")
 				goto BREAKTAG
 			}
 		}
-		select {
+		/*select {
 		case <-tout:
 			goto BREAKTAG
-		}
+		}*/
 	}
 BREAKTAG:
-	close(out)
-	close(tout)
 	fmt.Println("stop AgentETCD watcher")
 }
 
