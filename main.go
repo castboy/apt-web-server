@@ -34,7 +34,7 @@ func init() {
 	mlog.SetLogLevel(mlog.LevelDebug)
 
 	es.InitLog()
-	es.RegisterKeyword()
+	es.RegisterKeyword("conf/es_register_keyword")
 
 	Reg := regexp.MustCompile(`[\S]+`)
 	nodes, _ := mconfig.Conf.RawString("es", "nodes")
