@@ -4,3 +4,5 @@
 2017/11/20 12:47:22 [E] dial tcp 10.82.1.16:3306: connectex: A connection attempt failed because the connected party did not properly respond after a period of time, or established connection failed because connected host has failed to respond. 
 2017/11/20 12:54:20 [D] dburl= root:mysqladmin@tcp(10.82.1.16:3306)/aptwebservice?charset=utf8&&loc=Asia%2FShanghai 
 2017/11/20 12:54:41 [E] dial tcp 10.82.1.16:3306: connectex: A connection attempt failed because the connected party did not properly respond after a period of time, or established connection failed because connected host has failed to respond. 
+2017/11/20 13:20:29 [D] dburl= root:mysqladmin@tcp(10.82.1.16:3306)/aptwebservice?charset=utf8&&loc=Asia%2FShanghai 
+2017/11/20 13:20:50 [E] dial tcp 10.82.1.16:3306: connectex: A connection attempt failed because the connected party did not properly respond after a period of time, or established connection failed because connected host has failed to respond. 

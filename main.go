@@ -39,8 +39,9 @@ func init() {
 	Reg := regexp.MustCompile(`[\S]+`)
 	nodes, _ := mconfig.Conf.RawString("es", "nodes")
 	nodesSlice := Reg.FindAllString(nodes, -1)
+	port, _ := mconfig.Conf.String("es", "port")
 
-	es.Cli(nodesSlice)
+	es.Cli(nodesSlice, port)
 
 	route()
 }
