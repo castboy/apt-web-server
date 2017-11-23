@@ -6,5 +6,5 @@ Date	   Xdr.TimeAppend                           object          2
 Atk        Attack                                   object          0
 Sty        SeverityAppend                           object          0
 Alt        Type                                     object          0
-DIp        Xdr.Conn.Sip                             object          2
-SIp        Xdr.Conn.Dip                             object          2
+SIp        Xdr.Conn.Sip                             object          2
+DIp        Xdr.Conn.Dip                             object          2
