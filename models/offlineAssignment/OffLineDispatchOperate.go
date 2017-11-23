@@ -13,79 +13,48 @@ import (
 	"time"
 )
 
-/************test config************
+/************config************/
 var (
-	AgentStatusETCDSlice = []string{
-		"apt/agent/status/192.168.1.203"}
-	//"apt/agent/status/192.168.1.105"}
-	AgentStatusETCDIpPort = []string{
-		"http://192.168.1.203:2379"}
-	//"http://10.88.1.105:2379"}
-)
-
-const (
-	//Abs:"Absolute"
-	PyAbsPath           = "PYSPARK_PYTHON=/usr/bin/python2.7"
-	SparkAbsPath        = "/home/spark-2.1.1-bin-hadoop2.6/bin/spark-submit"
-	SparkParaList       = "--master yarn --deploy-mode cluster --name"
-	PickerScrAbsPath    = "/home/apt/picker.py"
-	AgentETCDCmdKey     = "apt/agent/offlineReq"
-	AgentETCDCmdIpPort  = "http://192.168.1.204:2379"
-	KafkaTopicIpPort    = "192.168.1.203:2181"
-	PickerETCDStatusKey = "picker"
-	PickerETCDCmdKey    = "pickerCmd"
-	ShutdownPicker      = "/bin/bash /home/apt/stopYarnApp.sh"
-	PickerETCDIpPort    = "http://192.168.1.204:2379"
-	TopicSSHUser        = "root"
-	TopicSSHPass        = "aaaaaa"
-	TopicSSHIP          = "192.168.1.203"
-	PickerSSHUser       = "root"
-	PickerSSHPass       = "aaaaaa"
-	PickerSSHIP         = "192.168.1.204"
-	SSHPort             = 22
-)
-*/
-/************default config************/
-var (
-	Reg                   = regexp.MustCompile(`[\S]+`)
-	keyslice, _           = mconfig.Conf.RawString("agent", "StatusKey")
-	ipportslice, _        = mconfig.Conf.RawString("agent", "StatusIpPort")
-	AgentStatusETCDSlice  = Reg.FindAllString(keyslice, -1)
-	AgentStatusETCDIpPort = Reg.FindAllString(ipportslice, -1)
+	Reg                = regexp.MustCompile(`[\S]+`)
+	AgentIpList, _     = mconfig.Conf.RawString("agent", "Ip")
+	AgentIp            = Reg.FindAllString(AgentIpList, -1)
+	AgentStatList, _   = mconfig.Conf.RawString("agent", "StatusKey")
+	AgentStatKey       = Reg.FindAllString(AgentStatList, -1)
+	EtcdIpList, _      = mconfig.Conf.RawString("etcd", "Ip")
+	EtcdIp             = Reg.FindAllString(EtcdIpList, -1)
+	EtcdPort, _        = mconfig.Conf.RawString("etcd", "Port")
+	EtcdIpPortList, _  = mconfig.Conf.RawString("etcd", "IpPort")
+	EtcdIpPort         = Reg.FindAllString(EtcdIpPortList, -1)
+	KafkaIpList, _     = mconfig.Conf.RawString("kafka", "Ip")
+	KafkaIp            = Reg.FindAllString(KafkaIpList, -1)
+	KafkaPort, _       = mconfig.Conf.RawString("kafka", "Port")
+	KafkaIpPortList, _ = mconfig.Conf.RawString("kafka", "IpPort")
+	KafkaIpPort        = Reg.FindAllString(KafkaIpPortList, -1)
 )
 
 var (
 	//Abs:"Absolute"
-	PyAbsPath, _           = mconfig.Conf.String("picker", "PyAbsPath")
-	SparkAbsPath, _        = mconfig.Conf.String("picker", "SparkAbsPath")
-	SparkParaList, _       = mconfig.Conf.String("picker", "SparkParaList")
-	PickerScrAbsPath, _    = mconfig.Conf.String("picker", "PickerScrAbsPath")
-	AgentETCDCmdKey, _     = mconfig.Conf.String("agent", "CmdKey")
-	AgentETCDCmdIpPort, _  = mconfig.Conf.String("agent", "CmdIpPort")
-	KafkaCmd, _            = mconfig.Conf.String("topic", "KafkaCmd")
-	KafkaCreate, _         = mconfig.Conf.String("topic", "Create")
-	KafkaDelete, _         = mconfig.Conf.String("topic", "Delete")
-	ParaZookeeper, _       = mconfig.Conf.String("topic", "ZKP")
-	ParaRF, _              = mconfig.Conf.String("topic", "RF") //replication-factor
-	RFNum, _               = mconfig.Conf.Int("topic", "RFNum")
-	ParaPartition, _       = mconfig.Conf.String("topic", "Partition")
-	PartitionNum, _        = mconfig.Conf.Int("topic", "PNum")
-	ParaTopic, _           = mconfig.Conf.String("topic", "PTopic")
-	KafkaTopicIpPort, _    = mconfig.Conf.String("topic", "IpPort")
-	PickerETCDStatusKey, _ = mconfig.Conf.String("picker", "ETCDStatusKey")
-	ShutdownPicker, _      = mconfig.Conf.String("picker", "ShutdownPicker")
-	PickerETCDIpPort, _    = mconfig.Conf.String("picker", "ETCDIpPort")
-	TopicSSHUser, _        = mconfig.Conf.String("ssh", "TopicSSHUser")
-	TopicSSHPass, _        = mconfig.Conf.String("ssh", "TopicSSHPass")
-	TopicSSHIP, _          = mconfig.Conf.String("ssh", "TopicSSHIP")
-	PickerSSHUser, _       = mconfig.Conf.String("ssh", "PickerSSHUser")
-	PickerSSHPass, _       = mconfig.Conf.String("ssh", "PickerSSHPass")
-	PickerSSHIP, _         = mconfig.Conf.String("ssh", "PickerSSHIP")
-	SSHPort, _             = mconfig.Conf.Int("ssh", "SSHPort")
-	TOPIC, _               = mconfig.Conf.String("agent", "Topic")
-	PARTITION, _           = mconfig.Conf.Int("agent", "PartitionNum")
-	KAFKA, _               = mconfig.Conf.String("agent", "KafkaIP")
-	e                      = mconfig.Conf.AddOption("a", "b", "c")
+	PyAbsPath, _        = mconfig.Conf.String("picker", "PyAbsPath")
+	SparkAbsPath, _     = mconfig.Conf.String("picker", "SparkAbsPath")
+	SparkParaList, _    = mconfig.Conf.String("picker", "SparkParaList")
+	PickerScrAbsPath, _ = mconfig.Conf.String("picker", "PickerScrAbsPath")
+	AgentETCDCmdKey, _  = mconfig.Conf.String("agent", "CmdKey")
+	KafkaCmd, _         = mconfig.Conf.String("kafka", "KafkaCmd")
+	RFNum, _            = mconfig.Conf.Int("kafka", "RFNum")
+	PartitionNum, _     = mconfig.Conf.Int("kafka", "PNum")
+	ParaTopic, _        = mconfig.Conf.String("kafka", "PTopic")
+	PickerStatusKey, _  = mconfig.Conf.String("picker", "ETCDStatusKey")
+	ShutdownPicker, _   = mconfig.Conf.String("picker", "ShutdownPicker")
+	TopicSSHUser, _     = mconfig.Conf.String("ssh", "TopicSSHUser")
+	TopicSSHPass, _     = mconfig.Conf.String("ssh", "TopicSSHPass")
+	TopicSSHIP, _       = mconfig.Conf.String("ssh", "TopicSSHIP")
+	PickerSSHUser, _    = mconfig.Conf.String("ssh", "PickerSSHUser")
+	PickerSSHPass, _    = mconfig.Conf.String("ssh", "PickerSSHPass")
+	PickerSSHIP, _      = mconfig.Conf.String("ssh", "PickerSSHIP")
+	SSHPort, _          = mconfig.Conf.Int("ssh", "SSHPort")
+	TOPIC, _            = mconfig.Conf.String("agent", "Topic")
+	PARTITION, _        = mconfig.Conf.Int("agent", "PartitionNum")
+	e                   = mconfig.Conf.AddOption("a", "b", "c")
 )
 
 func (this *TblOLA) TableName(tag string) string {
@@ -134,36 +103,10 @@ func (this *TblOLA) CreatAssignment(para *TblOLASearchPara) (error, *CMDResult) 
 	if para.Weight == 0 {
 		para.Weight = 5
 	}
-
-	fmt.Println("CreatAssignment Enter, para is :", para)
-
-	//var ele [5]string
-	//for idx, _ := range para.RuleSet {
-	//	if len(ele) > 0 {
-	//		ele[idx] = para.RuleSet[idx].Rule
-	//	}
-	//}
-	//fmt.Println("CreatAssignment, ele is :", ele)
-
 	paraTopic := fmt.Sprintf(`%s%d%s`, para.Type, para.Time, para.Name)
-	//query := fmt.Sprintf(`insert into %s(name,rule,rule2,rule3,rule4,rule5,time,type,start,end,weight,topic,status,details)
-	//					value('%s',%d,'%s','%s','%s',%d,'%s','%s','%s');`,
-	//query := fmt.Sprintf(`insert into %s(name,rule,rule2,rule3,rule4,rule5,time,type,start,end,weight,topic,status,details)
-	//					value('%s','%s','%s','%s','%s','%s',%d,'%s','%s','%s',%d,'%s','%s','%s');`,
-	//	/*"offline_assignment_rule2",*/ this.TableName(para.OfflineTag),
-
-	//rslice := make([]string, 0)
-	//for idx, _ := range para.RuleSet {
-	//	if len(para.RuleSet[idx].Rule) > 0 {
-	//		singlrStr := fmt.Sprintf(`%d:%s`, para.RuleSet[idx].Id, para.RuleSet[idx].Rule)
-	//		rslice = append(rslice, singlrStr)
-	//	}
-	//}
-	//VarSetStr := strings.Join(rslice, "|")
-
-	query := fmt.Sprintf(`insert into %s(name,ruleset,time,type,start,end,weight,topic,status,details) 
+	query := fmt.Sprintf(`INSERT INTO %s(name,ruleset,time,type,start,end,weight,topic,status,details) 
 						value('%s','%s',%d,'%s','%s','%s',%d,'%s','%s','%s');`,
-		this.TableName(para.OfflineTag), /*"offline_assignment_rule2",*/
+		this.TableName(para.OfflineTag),
 		para.Name,
 		para.RuleSet, /*VarSetStr*/
 		para.Time,
@@ -174,20 +117,6 @@ func (this *TblOLA) CreatAssignment(para *TblOLASearchPara) (error, *CMDResult) 
 		paraTopic,
 		"ready",
 		para.Details)
-
-	//query := fmt.Sprintf(`insert into %s(name,time,type,start,end,weight,topic,status,details)
-	//					value('%s',%d,'%s','%s','%s',%d,'%s','%s','%s');`,
-	//	this.TableName(para.OfflineTag),
-	//	para.Name,
-	//	para.Time,
-	//	para.Type,
-	//	para.Start,
-	//	para.End,
-	//	para.Weight,
-	//	paraTopic,
-	//	"ready",
-	//	para.Details)
-
 	rows, err := db.DB.Query(query)
 	fmt.Println(query)
 	if err != nil {
@@ -203,10 +132,9 @@ func (this *TblOLA) CreatAssignment(para *TblOLASearchPara) (error, *CMDResult) 
 
 func (this *TblOLA) DeleteAssignment(para *TblOLASearchPara) (error, *CMDResult) {
 	var res_t CMDResult
-	query := fmt.Sprintf(`delete from %s where name='%s' and time=%d;`,
+	query := fmt.Sprintf(`DELETE FROM %s WHERE name='%s' AND time=%d;`,
 		this.TableName(para.OfflineTag), para.Name, para.Time)
 	rows, err := db.DB.Query(query)
-	fmt.Println(query)
 	if err != nil {
 		mlog.Debug(query, "DeleteAssignment error")
 		res_t.Result = "faild"
@@ -217,272 +145,310 @@ func (this *TblOLA) DeleteAssignment(para *TblOLASearchPara) (error, *CMDResult)
 	res_t.Result = "ok"
 	return nil, &res_t
 }
-
-func (this *TblOLA) StartAssignment(para *TblOLASearchPara) (error, *CMDResult) {
-	var res_t CMDResult
-	var agentPar AgentPara
+func (this *TblOLA) GetTaskMsg(para *TblOLASearchPara) error {
 	query := fmt.Sprintf(`SELECT id,start,end,type,weight,topic,status 
 	    FROM %s WHERE name='%s' AND time=%d;`,
 		this.TableName(para.OfflineTag), para.Name, para.Time)
 	rows, err := db.DB.Query(query)
 	if err != nil {
-		res_t.Result = "faild"
 		mlog.Debug(query, "StartAssignment get task status error")
-		return err, &res_t
+		return err
 	}
 	defer rows.Close()
-	var pickerETCDKey, startPickerCmd, fileType, topicName, taskType string
-	var taskID int
-
 	for rows.Next() {
-		ugc := new(TblOLA)
 		err = rows.Scan(
-			&ugc.Id,
-			&ugc.Start,
-			&ugc.End,
-			&ugc.Type,
-			&ugc.Weight,
-			&ugc.Topic,
-			&ugc.Status)
+			&this.Id,
+			&this.Start,
+			&this.End,
+			&this.Type,
+			&this.Weight,
+			&this.Topic,
+			&this.Status)
 		if err != nil {
-			return err, nil
+			return err
 		}
-		taskID = ugc.Id
-		taskType = ugc.Type
-		topicName = ugc.Topic
-		agentPar.Weight = ugc.Weight
-		agentPar.Engine = taskType
-		agentPar.Topic = topicName
-
-		/******判断任务运行状态，避免重复运行******/
-		if ugc.Status == "running" {
-			res_t.Result = "this task is running!"
-			return nil, &res_t
-		} else if ugc.Status == "ready" || ugc.Status == "error" {
-			err := this.UpgradeStatus("status", "running", taskID, para.OfflineTag)
-			if err != nil {
-				mlog.Debug("Update status task ", taskID, "to running error")
-				res_t.Result = "Update task to running error"
-				return nil, &res_t
-			}
-		}
-		/************************************/
-
-		switch ugc.Type {
-		case "vds":
-			fileType = "file"
-		case "waf":
-			fileType = "http"
-		case "rule":
-			fileType = "http"
-		}
-		pickerETCDKey = fmt.Sprintf("%s/%d", PickerETCDStatusKey, ugc.Id)
-		startPickerCmd = fmt.Sprintf(`%s %s %s %s %s -x %s -s %s -e %s -i %d -k %s -t %s 2>/dev/null &`,
-			PyAbsPath, SparkAbsPath, SparkParaList, pickerETCDKey, PickerScrAbsPath,
-			fileType, ugc.Start, ugc.End, ugc.Id, ugc.Topic, para.OfflineTag)
 	}
-	fmt.Println(pickerETCDKey, startPickerCmd)
+	return nil
+}
+func GetFileType(taskType string) string {
+	var fileType string
+	switch taskType {
+	case "vds":
+		fileType = "file"
+	case "waf":
+		fileType = "http"
+	case "rule":
+		fileType = "http"
+	}
+	return fileType
+}
+func (this *TblOLA) CheckTaskStatus(oflTag string) (string, error) {
+	if this.Status == "running" {
+		return "this task is running!", nil
+	} else if this.Status == "ready" || this.Status == "error" {
+		err := this.UpgradeStatus("status", "running", this.Id, oflTag)
+		if err != nil {
+			mlog.Debug("Update status task ", this.Id, "to running error")
+			return "Update task to running error", err
+		}
+	}
+	return "", nil
+}
+func (this *TblOLA) StartAssignment(para *TblOLASearchPara) (error, *CMDResult) {
+	var res_t CMDResult
+	var agentPar AgentPara
 
-	/******构建：创建和删除topic命令******/
-	//creatTopicCmd := fmt.Sprintf(`kafka-topics --create --zookeeper %s --replication-factor 3 --partitions 1 --topic %s`, KafkaTopicIpPort, topicName)
-	//delTopicCmd := fmt.Sprintf(`kafka-topics --zookeeper %s --topic %s --delete`, KafkaTopicIpPort, topicName)
-	creatTopicCmd := fmt.Sprintf(`%s %s %s %s %s %d %s %d %s %s`,
-		KafkaCmd, KafkaCreate, ParaZookeeper, KafkaTopicIpPort, ParaRF, RFNum,
-		ParaPartition, PartitionNum, ParaTopic, topicName)
-	delTopicCmd := fmt.Sprintf(`%s %s %s %s %s %s`, KafkaCmd, ParaZookeeper,
-		KafkaTopicIpPort, ParaTopic, topicName, KafkaDelete)
-	/*********************************/
-
+	err := this.GetTaskMsg(para)
+	if err != nil {
+		res_t.Result = "faild"
+		mlog.Debug("Get task message error")
+		return err, &res_t
+	}
+	agentPar.Weight = this.Weight
+	agentPar.Engine = this.Type
+	agentPar.Topic = this.Topic
+	fileType := GetFileType(this.Type)
+	/******判断任务运行状态，避免重复运行******/
+	res_t.Result, err = this.CheckTaskStatus(para.OfflineTag)
+	if res_t.Result != "" || err != nil {
+		return err, &res_t
+	}
+	/************************************/
+	pickerKey := fmt.Sprintf("%s/%d", PickerStatusKey, this.Id)
+	mlog.Debug(pickerKey)
+	agentCmdKey := fmt.Sprintf("%s/%d", AgentETCDCmdKey, this.Id)
+	mlog.Debug(agentCmdKey)
 	/******创建topic******/
-	fmt.Println("######创建topic######")
-	err = SSHCmd(TopicSSHUser, TopicSSHPass, TopicSSHIP, creatTopicCmd, SSHPort)
-	if err != nil {
-		fmt.Println("creat topic error is :", err)
+	err, res_t.Result = this.TopicCreate()
+	if nil != err || "" != res_t.Result {
+		fmt.Println("create topic ", this.Topic, " error:", err)
 	}
-	/********************/
-
 	/******创建picker etcd******/
-	fmt.Println("######创建 picker_etcd!######")
-	_, err = EtcdCmd("put", pickerETCDKey, "", PickerETCDIpPort)
-	if err != nil {
-		mlog.Debug("pickeretcd creat error:", err)
-		res_t.Result = "faild"
-		delerr := SSHCmd(TopicSSHUser, TopicSSHPass, TopicSSHIP, delTopicCmd, SSHPort)
-		if delerr != nil {
-			mlog.Debug("pickeretcd creat error and delete topic ", topicName, " error:", delerr)
-		}
+	err, res_t.Result = this.PickerEtcdCreate(pickerKey)
+	if nil != err || "" != res_t.Result {
+		DelTopic(this.Topic)
 		return err, &res_t
 	}
-	fmt.Println("creat picker_etcd finish! err=", err)
-	/****************************/
-
 	/******调度agent******/
-	fmt.Println("######调度 agent start######")
-	agentEtcdCmdKey := fmt.Sprintf("%s/%d", AgentETCDCmdKey, taskID)
-	agentPar.SignalType = "start"
-	paraAgent, err := json.Marshal(agentPar)
-	if err != nil {
-		mlog.Debug("task ", taskID, " jsonMarshal agentPar.SignalType=stop error:", err)
-	}
-	_, err = EtcdCmd("put", agentEtcdCmdKey, string(paraAgent), AgentETCDCmdIpPort)
-	if err != nil {
-		res_t.Result = "faild"
-		statuserr := this.UpgradeStatus("status", "error", taskID, para.OfflineTag)
-		if statuserr != nil {
-			mlog.Debug("agent start error and update status error to task ", taskID, " error")
-		}
-		detailserr := this.UpgradeStatus("details", "start agent faild", taskID, para.OfflineTag)
-		if detailserr != nil {
-			mlog.Debug("agent start error and update details error to task ", taskID, " error")
-		}
+	err, res_t.Result = this.AgentTell(agentPar, agentCmdKey, para.OfflineTag)
+	if "" != res_t.Result || nil != err {
+		DelTopic(this.Topic)
+		DelETCD(pickerKey, agentCmdKey)
 		return err, &res_t
 	}
-	/*********************/
-
-	//向agent发送"start"消息
-	agentPar.SignalType = "start"
-	paraAgent, err = json.Marshal(agentPar)
-	if nil != err {
-		mlog.Debug("`start` json.Marshal err")
-	}
-	err = SendOfflineMsg(paraAgent)
-	if nil != err {
-		mlog.Debug("send `start` msg failed")
-	}
-
-	/*******监控 picker_etcd*******/
-	fmt.Println("######监控picker_etcd start######")
-	go func() {
-		agentPar.SignalType = "stop"
-		agentStop, err := json.Marshal(agentPar)
-		if err != nil {
-			mlog.Debug("task ", taskID, " jsonMarshal agentPar.SignalType=stop error:", err)
-		}
-		this.WatchEtcdPicker(pickerETCDKey, PickerETCDIpPort, string(agentStop), taskID, para.OfflineTag)
-	}()
-	/*****************************/
-
+	/******监控 picker_etcd******/
+	go this.PickerWatch(agentPar, pickerKey, para.OfflineTag)
 	/******启动 picker******/
-	fmt.Println("######启动 picker######")
-	go func() {
-		err = SSHCmd(PickerSSHUser, PickerSSHPass, PickerSSHIP, startPickerCmd, SSHPort)
-		if err != nil {
-			fmt.Println("start picker error is:", err)
-		}
-	}()
-	/**********************/
-
+	go this.PickerStart(pickerKey, fileType, para.OfflineTag)
 	/******监控agent_etcd******/
-	fmt.Println("######监控agent_etcd start######")
-	agentListNum := len(AgentStatusETCDSlice)
-	chAgent := make(chan int, agentListNum)
-	for index, agentKey := range AgentStatusETCDSlice {
-		go this.WatchEtcdAgent(taskType, agentKey, AgentStatusETCDIpPort[index], topicName, agentEtcdCmdKey, taskID, chAgent)
-	}
-	go func() {
-		var chCount int
-		i := 0
-		for res := range chAgent {
-			chCount += res
-			i++
-			if i == agentListNum {
-				close(chAgent)
-				if chCount == agentListNum {
-					if para.OfflineTag != "rule" {
-						time.Sleep(10 * time.Minute)
-					}
-					OflDup(taskType, para)
-					err := this.UpgradeStatus("status", "complete", taskID, para.OfflineTag)
-					if err != nil {
-						mlog.Debug("task ", taskID, " complete but update status error!")
-					}
-					fmt.Println("finish")
-					agentPar.SignalType = "complete"
-				} else if chCount > agentListNum {
-					fmt.Println("task ", taskID, " shutdown!")
-					goto WATCHAGENTOUT
-				} else if chCount < agentListNum {
-					agentPar.SignalType = "shutdown"
-					mlog.Debug("task ", taskID, " WatchEtcdAgent error!")
-					upStaErr := this.UpgradeStatus("status", "error", taskID, para.OfflineTag)
-					if upStaErr != nil {
-						mlog.Debug("task ", taskID, " WatchEtcdAgent error and update status error!")
-					}
-					upDetErr := this.UpgradeStatus("details", "WatchEtcdAgent Error!", taskID, para.OfflineTag)
-					if upDetErr != nil {
-						mlog.Debug("task ", taskID, " WatchEtcdAgent error and update status error!")
-					}
-				}
-				/******通知agent任务完成******/
-				agentCmdComplete, err := json.Marshal(agentPar)
-				if nil != err {
-					mlog.Debug("`complete` json.Marshal err")
-				}
-				err = SendOfflineMsg(agentCmdComplete)
-				if nil != err {
-					mlog.Debug("send `complete` msg failed")
-				}
-				/******删除topic和etcd******/
-				DelTopic(delTopicCmd, topicName)
-				DelETCD(pickerETCDKey, agentEtcdCmdKey)
-				/*********************/
-			}
-		}
-	WATCHAGENTOUT:
-	}()
-	/*************************/
+	go this.AgentWatch(para, agentPar, pickerKey, agentCmdKey)
+
 	res_t.Result = "ok"
 	return nil, &res_t
 }
-func OflDup(taskType string, para *TblOLASearchPara) {
+func (this *TblOLA) TopicCreate() (error, string) {
+	/*创建topic命令
+	kafka-topics --create          指定创建动作
+	--zookeeper KafkaIpPort        指定kafka连接zookeeper的连接url
+	--replication-factor RFNum     指定每个分区的复制因子个数
+	--partitions len(AgentIp)      指定当前创建的kafka分区数量
+	--topic topicName              指定要创建的topic的名称*/
+	creatTopicCmd := fmt.Sprintf(`%s --create --zookeeper %s --replication-factor %d --partitions %d --topic %s`,
+		KafkaCmd, KafkaIpPort[0], RFNum, len(AgentIp), this.Topic)
+	mlog.Debug("######创建topic######", creatTopicCmd)
+	err := SSHCmd(TopicSSHUser, TopicSSHPass, TopicSSHIP, creatTopicCmd, SSHPort)
+	if err != nil {
+		mlog.Debug("creat topic error is :", err)
+		return err, "create topic error"
+	}
+	return nil, ""
+}
+func (this *TblOLA) PickerEtcdCreate(pickerKey string) (error, string) {
+	mlog.Debug("######创建pickerEtcd######")
+	_, err := EtcdCmd("put", pickerKey, "")
+	if err != nil {
+		mlog.Debug("pickeretcd create error:", err)
+		return err, "create picker etcd error"
+	}
+	return nil, ""
+}
+func (this *TblOLA) AgentTell(agentPar AgentPara, agentCmdKey, oflTag string) (error, string) {
+	mlog.Debug("######调度 agent start######")
+	agentPar.SignalType = "start"
+	paraAgent, err := json.Marshal(agentPar)
+	if err != nil {
+		mlog.Debug("task ", this.Id, " jsonMarshal agentPar.SignalType=stop error:", err)
+		return err, "make json to start agent error"
+	}
+	_, err = EtcdCmd("put", agentCmdKey, string(paraAgent))
+	if err != nil {
+		mlog.Debug("task", this.Id, "put start to agentetcd error")
+		statuserr := this.UpgradeStatus("status", "error", this.Id, oflTag)
+		if statuserr != nil {
+			mlog.Debug("agent start error and update status error to task ", this.Id, " error")
+		}
+		detailserr := this.UpgradeStatus("details", "start agent faild", this.Id, oflTag)
+		if detailserr != nil {
+			mlog.Debug("agent start error and update details error to task ", this.Id, " error")
+		}
+		return err, "put start json to agentetcd error"
+	}
+	/******向agent发送start消息******/
+	mlog.Debug("######向agentKafka发送start消息######")
+	err = SendOfflineMsg(paraAgent)
+	if nil != err {
+		mlog.Debug("send `start` msg failed")
+		return err, "send start to agentKafka error"
+	}
+	return nil, ""
+}
+func (this *TblOLA) PickerStart(pickerKey, fileType, oflTag string) {
+	mlog.Debug("######启动 picker######")
+	startPickerCmd := fmt.Sprintf(`%s %s %s %s %s -x %s -s %s -e %s -i %d -k %s -t %s 2>/dev/null &`,
+		PyAbsPath, SparkAbsPath, SparkParaList, pickerKey, PickerScrAbsPath,
+		fileType, this.Start, this.End, this.Id, this.Topic, oflTag)
+	mlog.Debug(startPickerCmd)
+	err := SSHCmd(PickerSSHUser, PickerSSHPass, PickerSSHIP, startPickerCmd, SSHPort)
+	if err != nil {
+		mlog.Debug("start picker error is:", err)
+	}
+}
+func (this *TblOLA) PickerWatch(agentPar AgentPara, pickerKey, oflTag string) {
+	mlog.Debug("######监控picker_etcd start######")
+	agentPar.SignalType = "stop"
+	agentStop, err := json.Marshal(agentPar)
+	if err != nil {
+		mlog.Debug("task ", this.Id, " make agent stop json error:", err)
+	}
+	this.WatchEtcdPicker(pickerKey, string(agentStop), oflTag)
+}
+func (this *TblOLA) AgentWatch(para *TblOLASearchPara, agentPar AgentPara, pickerKey, agentCmdKey string) {
+	agentListNum := len(AgentIp)
+	chAgent := make(chan int, agentListNum)
+	for index, StatKey := range AgentStatKey {
+		mlog.Debug("######监控agent_etcd start######", index)
+		go this.WatchEtcdAgent(this.Type, StatKey, agentCmdKey, chAgent)
+	}
+	var chCount int
+	i := 0
+	for res := range chAgent {
+		chCount += res
+		i++
+		if i == agentListNum {
+			close(chAgent)
+			if chCount == agentListNum {
+				if para.OfflineTag != "rule" {
+					time.Sleep(10 * time.Minute)
+				}
+				OflDup(this.Type, para)
+				err := this.UpgradeStatus("status", "complete", this.Id, para.OfflineTag)
+				if err != nil {
+					mlog.Debug("task ", this.Id, " complete but update status error!")
+				}
+				mlog.Debug(this.Name, "finished")
+				agentPar.SignalType = "complete"
+			} else if chCount > agentListNum {
+				mlog.Debug("task ", this.Id, " shutdown!")
+				goto WATCHAGENTOUT
+			} else if chCount < agentListNum {
+				agentPar.SignalType = "error"
+				mlog.Debug("task ", this.Id, " WatchEtcdAgent error!")
+				upStaErr := this.UpgradeStatus("status", "error", this.Id, para.OfflineTag)
+				if upStaErr != nil {
+					mlog.Debug("task ", this.Id, " WatchEtcdAgent error and update status error!")
+				}
+				upDetErr := this.UpgradeStatus("details", "WatchEtcdAgent Error!", this.Id, para.OfflineTag)
+				if upDetErr != nil {
+					mlog.Debug("task ", this.Id, " WatchEtcdAgent error and update status error!")
+				}
+			}
+			/******通知agent任务完成******/
+			agentCmdComplete, err := json.Marshal(agentPar)
+			if nil != err {
+				mlog.Debug("`complete` json.Marshal err")
+			}
+			err = SendOfflineMsg(agentCmdComplete)
+			if nil != err {
+				mlog.Debug("send `complete` msg failed")
+			}
+			/******删除topic和etcd******/
+			DelTopic(this.Topic)
+			DelETCD(pickerKey, agentCmdKey)
+			/*********************/
+		}
+	}
+WATCHAGENTOUT:
+}
+func OflDup(taskType string, para *TblOLASearchPara) error {
+	var olerr, oferr error
 	switch taskType {
 	case "vds":
-		verr := vds.DuplicateVds("alert_vds", para.Name, para.Time)
-		if verr != nil {
+		olerr = vds.DuplicateVds("alert_vds", para.Name, para.Time)
+		if olerr != nil {
 			mlog.Debug("duplicate alert_vds error")
 		}
-		voerr := vds.DuplicateVds("alert_vds_offline", para.Name, para.Time)
-		if voerr != nil {
+		oferr = vds.DuplicateVds("alert_vds_offline", para.Name, para.Time)
+		if oferr != nil {
 			mlog.Debug("duplicate alert_vds_offline error")
 		}
 	case "waf":
-		werr := waf.DuplicateWaf("alert_waf", para.Name, para.Time)
-		if werr != nil {
+		olerr = waf.DuplicateWaf("alert_waf", para.Name, para.Time)
+		if olerr != nil {
 			mlog.Debug("duplicate alert_waf error")
 		}
-		woerr := waf.DuplicateWaf("alert_waf_offline", para.Name, para.Time)
-		if woerr != nil {
+		oferr = waf.DuplicateWaf("alert_waf_offline", para.Name, para.Time)
+		if oferr != nil {
 			mlog.Debug("duplicate alert_waf_offline error")
 		}
 	}
+	if nil != olerr {
+		return olerr
+	} else if nil != oferr {
+		return oferr
+	}
+	return nil
 }
-func DelTopic(delTopicCmd, topicName string) {
+func DelTopic(topicName string) error {
+	/*kafka-topics --zookeeper KafkaTopicIpPort --topic topicName --delete*/
+	delTopicCmd := fmt.Sprintf(`%s --zookeeper %s --topic %s --delete`,
+		KafkaCmd, KafkaIpPort[0], topicName)
+	mlog.Debug(delTopicCmd)
 	err := SSHCmd(TopicSSHUser, TopicSSHPass, TopicSSHIP, delTopicCmd, SSHPort)
 	if err != nil {
 		mlog.Debug("delete topic error!")
+		return err
 	} else {
 		mlog.Debug("delete topic ", topicName, " OK!")
 	}
+	return nil
 }
-func DelETCD(pickerETCDKey, agentEtcdCmdKey string) {
-	_, err := EtcdCmd("delete", pickerETCDKey, "", PickerETCDIpPort)
+
+func DelETCD(pickerKey, agentCmdKey string) error {
+	err := SSHCmd(PickerSSHUser, PickerSSHPass, PickerSSHIP, ShutdownPicker+" "+pickerKey, SSHPort)
+	if err != nil {
+		mlog.Debug("stop ", pickerKey, " error!", err)
+	} else {
+		mlog.Debug("stop ", pickerKey, " OK!", err)
+	}
+	_, err = EtcdCmd("delete", pickerKey, "")
 	if err != nil {
 		mlog.Debug("delete picker etcd error!")
 	}
-	_, err = EtcdCmd("delete", agentEtcdCmdKey, "", AgentETCDCmdIpPort)
+	_, err = EtcdCmd("delete", agentCmdKey, "")
 	if err != nil {
 		mlog.Debug("delete agent cmd etcd error!")
 	}
+	return nil
 }
 
 func (this *TblOLA) UpgradeStatus(column, value string, taskID int, tag string) error {
-	query := fmt.Sprintf(`update %s set %s='%s' where id=%d;`,
+	query := fmt.Sprintf(`UPDATE %s SET %s='%s' WHERE id=%d;`,
 		this.TableName(tag),
 		column,
 		value,
 		taskID)
 	rows, err := db.DB.Query(query)
-	fmt.Println(query)
+	//fmt.Println(query)
 	if err != nil {
 		mlog.Debug("error!agent upgrade status faild!")
 		return err

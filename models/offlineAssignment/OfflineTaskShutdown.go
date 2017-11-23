@@ -1,7 +1,7 @@
 package offlineAssignment
 
 import (
-	"apt-web-server_v2/models/db"
+	//"apt-web-server_v2/models/db"
 	"apt-web-server_v2/modules/mlog"
 	"encoding/json"
 	"fmt"
@@ -10,50 +10,31 @@ import (
 
 func (this *TblOLA) ShutDownAssignment(para *TblOLASearchPara) (error, *CMDResult) {
 	var res_t CMDResult
-	var taskId int
-	var agentPar AgentPara
-	query := fmt.Sprintf(`select id,start,end,type,weight,topic,status from %s where name='%s' and time=%d;`,
-		this.TableName(para.OfflineTag),
-		para.Name,
-		para.Time)
-	rows, err := db.DB.Query(query)
+	err := this.GetTaskMsg(para)
 	if err != nil {
-		return err, nil
+		res_t.Result = "faild"
+		mlog.Debug("Get task message error")
+		return err, &res_t
 	}
-	defer rows.Close()
-	for rows.Next() {
-		ugc := new(TblOLA)
-		err = rows.Scan(
-			&ugc.Id,
-			&ugc.Start,
-			&ugc.End,
-			&ugc.Type,
-			&ugc.Weight,
-			&ugc.Topic,
-			&ugc.Status)
-		if err != nil {
-			return err, nil
-		}
-		taskId = ugc.Id
-		agentPar.Engine = ugc.Type
-		agentPar.Weight = ugc.Weight
-		agentPar.Topic = ugc.Topic
-	}
+	var agentPar AgentPara
+	agentPar.Engine = this.Type
+	agentPar.Weight = this.Weight
+	agentPar.Topic = this.Topic
 	/******获取picker状态并向picker发送shutdown消息******/
-	pickerKey := fmt.Sprintf("%s/%d", PickerETCDStatusKey, taskId)
-	shutdownPickerCmd := fmt.Sprintf("%s %s", ShutdownPicker, pickerKey)
-	pickerCount, pickerTotal, err := GetEtcdPicker(pickerKey, PickerETCDIpPort)
+	pickerKey := fmt.Sprintf("%s/%d", PickerStatusKey, this.Id)
+	stopPickerCmd := fmt.Sprintf("%s %s", ShutdownPicker, pickerKey)
+	pickerStat, err := GetEtcdPicker(pickerKey)
 	if err != nil {
 		mlog.Debug("OfflineTaskShutdown's GetEtcdPicker error")
 	}
-	if pickerTotal != 0 && pickerCount != pickerTotal {
-		err = SSHCmd(PickerSSHUser, PickerSSHPass, PickerSSHIP, shutdownPickerCmd, SSHPort)
+	if pickerStat.Total != 0 && pickerStat.Count != pickerStat.Total {
+		err = SSHCmd(PickerSSHUser, PickerSSHPass, PickerSSHIP, stopPickerCmd, SSHPort)
 		if err != nil {
 			mlog.Debug("picker shutdown fail!")
 		}
 	}
-	/*************************************************/
 	/******获取agent状态并向agent发送shutdown消息******/
+	agentCmdKey := fmt.Sprintf(`%s/%d`, AgentETCDCmdKey, this.Id)
 	agentPar.SignalType = "shutdown"
 	agentCmdShutdown, err := json.Marshal(agentPar)
 	if nil != err {
@@ -63,27 +44,24 @@ func (this *TblOLA) ShutDownAssignment(para *TblOLASearchPara) (error, *CMDResul
 	if nil != err {
 		mlog.Debug("send `shutdown` msg failed")
 	}
-
+	_, err = EtcdCmd("put", agentCmdKey, string(agentCmdShutdown))
+	if nil != err {
+		mlog.Debug("put shutdown to agent etcd error:", err)
+	}
 	/******删除etcd和topic ******/
-	_, err = EtcdCmd("delete", pickerKey, "", PickerETCDIpPort)
+	_, err = EtcdCmd("delete", pickerKey, "")
 	if err != nil {
 		mlog.Debug("delete picker etcd fail!", err)
 	}
-	/*	_, err = EtcdCmd("delete", agentCmdKey, "", AgentETCDCmdIpPort)
-		if err != nil {
-			fmt.Println("delete agent etcd fail!")
-		}
-	*/
-	deleteTopicCmd := fmt.Sprintf(`kafka-topics --zookeeper %s --topic %s --delete`, KafkaTopicIpPort, agentPar.Topic)
-	err = SSHCmd(TopicSSHUser, TopicSSHPass, TopicSSHIP, deleteTopicCmd, SSHPort)
+	_, err = EtcdCmd("delete", agentCmdKey, "")
 	if err != nil {
-		fmt.Println("delete topic error!", err)
+		fmt.Println("delete agent etcd fail!")
 	}
-	/***************************/
+	DelTopic(this.Topic)
 	/******设置任务状态******/
-	err = this.UpgradeStatus("status", "shutdown", taskId, para.OfflineTag)
+	err = this.UpgradeStatus("status", "shutdown", this.Id, para.OfflineTag)
 	if err != nil {
-		mlog.Debug("set task ", taskId, " error!")
+		mlog.Debug("set task ", this.Id, " error!")
 	}
 	/*********************/
 	res_t.Result = "ok"

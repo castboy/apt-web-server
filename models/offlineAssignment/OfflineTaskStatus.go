@@ -25,26 +25,25 @@ func (this *TblOLA) GetStatus(paraName string, paraTime int64, tag string) (erro
 	var taskType, topicName string
 	var statusReq TaskStatusList
 	var statusCount TaskEtcdResData
-	query := fmt.Sprintf(`select id,type,topic,status from %s where name='%s' and time=%d;`,
+	query := fmt.Sprintf(`SELECT id,type,topic,status FROM %s 
+	WHERE name IN ('%s') AND time IN ('%d');`,
 		this.TableName(tag),
 		paraName,
 		paraTime)
 	rows, err := db.DB.Query(string(query))
-	fmt.Println(query)
 	if err != nil {
-		//return err, nil
+		mlog.Debug(query, err)
+		return err, nil
 	}
 	defer rows.Close()
 	for rows.Next() {
 		err = rows.Scan(
 			&taskID,
-			//&statusReq.Name,
-			//&statusReq.Time,
 			&taskType,
 			&topicName,
 			&statusReq.Status)
 		if err != nil {
-			//return err, nil
+			return err, nil
 		}
 	}
 	statusReq.Name = paraName
@@ -52,24 +51,27 @@ func (this *TblOLA) GetStatus(paraName string, paraTime int64, tag string) (erro
 	if statusReq.Status == "ready" || statusReq.Status == "wait" {
 		return nil, &statusReq
 	}
-	pickerKey := fmt.Sprintf(`picker/%d`, taskID)
+	pickerKey := fmt.Sprintf(`%s/%d`, PickerStatusKey, taskID)
 
-	pickerCount, pickerTotal, err := GetEtcdPicker(pickerKey, PickerETCDIpPort)
+	//pickerCount, pickerTotal, err := GetEtcdPicker(pickerKey, EtcdIpPort)
+	pickerStat, err := GetEtcdPicker(pickerKey)
 	if err != nil {
 		mlog.Debug("OfflineTaskStatus GetEtcdPicker error:", err)
 	}
-	statusCount.PickerCount = float32(pickerCount)
-	statusCount.PickerTotal = float32(pickerTotal)
+	statusCount.PickerCount = float32(pickerStat.Count)
+	statusCount.PickerTotal = float32(pickerStat.Total)
 
-	for index, agentKey := range AgentStatusETCDSlice {
-		count, total, err := GetEtcdAgent(taskType, topicName, agentKey, AgentStatusETCDIpPort[index])
+	for index, agentKey := range AgentStatKey {
+		fmt.Println(index)
+		//count, total, err := GetEtcdAgent(taskType, topicName, agentKey)
+		aStatus, err := GetEtcdAgent(taskType, topicName, agentKey)
 		if err != nil {
-			mlog.Debug("OfflineTaskStatus' GetEtcdAgent error:", err)
+			mlog.Debug("OfflineTaskStatus GetEtcdAgent error:", err)
 			statusReq.Status = "error"
 			return err, &statusReq
 		}
-		statusCount.AgentCount += float32(count)
-		statusCount.AgentTotal += float32(total)
+		statusCount.AgentCount += float32(aStatus.Engine + aStatus.Err)
+		statusCount.AgentTotal += float32(aStatus.Last)
 	}
 
 	if statusCount.PickerTotal == 0 {
@@ -89,7 +91,7 @@ func (this *TblOLA) GetStatus(paraName string, paraTime int64, tag string) (erro
 	if statusReq.PickerPercent == 100 && statusReq.AgentPercent == 100 && statusReq.Status != "complete" {
 		err := this.UpgradeStatus("status", "complete", taskID, tag)
 		if err != nil {
-			fmt.Println("set task ", taskID, " status error!")
+			mlog.Debug("set task ", taskID, " status to complete error!")
 			return nil, &statusReq
 		}
 		statusReq.Status = "complete"

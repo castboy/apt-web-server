@@ -4,6 +4,7 @@ package sniff
 
 import (
 	"apt-web-server_v2/controllers/public"
+	"apt-web-server_v2/models/modelsPublic"
 	"apt-web-server_v2/models/sniff"
 	"fmt"
 	"net/http"
@@ -66,6 +67,12 @@ func (this *SniffdeleteController) Get(w http.ResponseWriter, r *http.Request, _
 	rst := sniff.Manage()
 	if rst == false {
 		fmt.Println("manage plcy err")
+		public.Write(w, public.ErrOkErr, "删除成功下发失败")
+		return
+	}
+	rst = modelsPublic.Update_mysql("update sniff_plcy_ui set issued_status=1")
+	rst = modelsPublic.Update_mysql("update sniff_plcy_issued set status=1")
+	if rst == false {
 		public.Write(w, public.ErrOkErr, "err")
 		return
 	}

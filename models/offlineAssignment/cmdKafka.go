@@ -8,7 +8,7 @@ import (
 	"github.com/optiopay/kafka/proto"
 )
 
-var kafkaAddrs = []string{KAFKA + ":9092", KAFKA + ":9093"}
+var kafkaAddrs = []string{KafkaIp[0] + ":9092", KafkaIp[0] + ":9093"}
 
 func SendOfflineMsg(bytes []byte) error {
 	conf := kafka.NewBrokerConf("test-client")
@@ -23,7 +23,6 @@ func SendOfflineMsg(bytes []byte) error {
 	producer := broker.Producer(kafka.NewProducerConf())
 
 	msg := &proto.Message{Value: bytes}
-
 	_, produceErr := producer.Produce(TOPIC, int32(PARTITION), msg)
 	if produceErr != nil {
 		log := fmt.Sprintf("cannot produce message to %s:%d: %s", TOPIC, PARTITION, err)

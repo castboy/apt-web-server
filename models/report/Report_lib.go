@@ -47,7 +47,7 @@ func Security_Reportcondition(input Attribute_st) Security_st {
 	var mysql_out Attribute_st
 	sql_cmd := fmt.Sprintf(`select attack_type,sum(attack_count) from attack_days group 
 		by attack_type order by %s desc`, "sum(attack_count)")
-	//fmt.Println(sql_cmd)
+	fmt.Println(sql_cmd)
 	rows := modelsPublic.Select_mysql(sql_cmd)
 	if rows == nil {
 		return output
@@ -73,7 +73,7 @@ func Security_Reportcondition(input Attribute_st) Security_st {
 			}
 			q = k
 		}
-		if q == len(mysql_out.Info)-1 {
+		if q >= len(mysql_out.Info)-1 {
 			var info1 Statistics_st
 			info1.Type = input.Info[i]
 			output.Statistics = append(output.Statistics, info1)
