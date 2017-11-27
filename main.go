@@ -102,7 +102,7 @@ func route() {
 	routerA.GET("/byzoro.apt.com/index/attackmonitor", index.AttackMonitorObj.Get)
 	routerA.GET("/byzoro.apt.com/Report/Security", report.SecurityObj.Get)
 
-	routerA.GET("/byzoro.apt.com/es-alert-search", es.Server)
+	routerA.POST("/byzoro.apt.com/es-alert-search", es.Server)
 
 	return
 }
